@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Исследование агентств по классифайдам</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --ink: #f7f8ff;
+      --muted: #aeb7d5;
+      --soft: rgba(255,255,255,.08);
+      --line: rgba(255,255,255,.16);
+      --accent: #7dd3fc;
+      --accent2: #a78bfa;
+      --accent3: #34d399;
+      --warn: #fbbf24;
+      --card: rgba(17, 24, 45, .76);
+      --shadow: 0 24px 90px rgba(0,0,0,.34);
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; }
+    body {
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      background: radial-gradient(circle at 12% 12%, rgba(125,211,252,.18), transparent 34%),
+                  radial-gradient(circle at 86% 15%, rgba(167,139,250,.18), transparent 32%),
+                  linear-gradient(135deg, #070a14 0%, #10182d 58%, #080b16 100%);
+      color: var(--ink);
+      overflow: hidden;
+    }
+    .deck { height: 100vh; width: 100vw; position: relative; }
+    .slide {
+      display: none;
+      width: min(1280px, 100vw);
+      height: min(720px, 100vh);
+      aspect-ratio: 16 / 9;
+      position: absolute;
+      inset: 50% auto auto 50%;
+      transform: translate(-50%, -50%);
+      padding: 58px 72px;
+      overflow: hidden;
+    }
+    .slide.active { display: block; animation: fade .22s ease; }
+    @keyframes fade { from { opacity: .35; transform: translate(-49%, -50%); } to { opacity: 1; transform: translate(-50%, -50%); } }
+    .slide::before {
+      content: ""; position: absolute; inset: 18px;
+      border: 1px solid var(--line); border-radius: 30px; pointer-events: none;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.02);
+    }
+    h1, h2, h3, p { margin: 0; }
+    h1 { font-size: 72px; line-height: .94; letter-spacing: -3px; max-width: 910px; }
+    h2 { font-size: 44px; line-height: 1.02; letter-spacing: -1.7px; max-width: 940px; }
+    h3 { font-size: 24px; letter-spacing: -.45px; }
+    p { font-size: 19px; line-height: 1.46; color: var(--muted); }
+    .eyebrow { color: var(--accent); text-transform: uppercase; letter-spacing: .14em; font-weight: 800; font-size: 13px; margin-bottom: 18px; }
+    .sub { font-size: 23px; line-height: 1.42; color: #ccd5f4; max-width: 780px; margin-top: 26px; }
+    .footer { position: absolute; left: 72px; right: 72px; bottom: 36px; display: flex; justify-content: space-between; color: rgba(255,255,255,.42); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; }
+    .grid { display: grid; gap: 18px; }
+    .grid-3 { grid-template-columns: repeat(3, 1fr); }
+    .grid-2 { grid-template-columns: repeat(2, 1fr); }
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.045));
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+    }
+    .metric { font-size: 38px; line-height: 1; font-weight: 850; letter-spacing: -1.5px; margin-top: 12px; }
+    .label { color: var(--muted); font-size: 15px; line-height: 1.35; margin-top: 12px; }
+    .tag { display: inline-flex; align-items: center; border-radius: 999px; border: 1px solid var(--line); padding: 8px 12px; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: #dce6ff; background: rgba(255,255,255,.06); }
+    .row { display: flex; gap: 16px; align-items: center; }
+    .logo-mark { width: 52px; height: 52px; border-radius: 16px; display: grid; place-items: center; font-weight: 900; font-size: 22px; color: #06101f; }
+    .m1 { background: linear-gradient(135deg, var(--accent), #e0f2fe); }
+    .m2 { background: linear-gradient(135deg, var(--accent2), #ede9fe); }
+    .m3 { background: linear-gradient(135deg, var(--accent3), #d1fae5); }
+    .price-table { width: 100%; border-collapse: collapse; margin-top: 24px; overflow: hidden; border-radius: 20px; font-size: 17px; }
+    .price-table th { text-align: left; color: #f2f5ff; font-size: 13px; letter-spacing: .1em; text-transform: uppercase; padding: 16px 18px; background: rgba(255,255,255,.09); }
+    .price-table td { padding: 18px; border-top: 1px solid var(--line); color: #dce4ff; vertical-align: top; }
+    .price-table td:nth-child(2) { color: #ffffff; font-weight: 800; }
+    .pillline { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 22px; }
+    .pill { border: 1px solid var(--line); background: rgba(255,255,255,.065); color: #e8edff; padding: 10px 13px; border-radius: 999px; font-size: 14px; }
+    .big-quote { font-size: 35px; line-height: 1.12; letter-spacing: -1.2px; color: #fff; max-width: 840px; }
+    .split { display: grid; grid-template-columns: .9fr 1.1fr; gap: 30px; align-items: stretch; margin-top: 32px; }
+    .note { border-left: 4px solid var(--accent); padding-left: 18px; color: #d9e4ff; font-size: 22px; line-height: 1.36; }
+    .stack { display: grid; gap: 14px; }
+    .mini { padding: 18px 20px; border-radius: 18px; border: 1px solid var(--line); background: rgba(255,255,255,.055); }
+    .mini strong { color: #fff; display: block; font-size: 16px; margin-bottom: 6px; }
+    .mini span { color: var(--muted); font-size: 15px; line-height: 1.35; display: block; }
+    .axis { height: 250px; margin-top: 30px; position: relative; border-left: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .axis::after { content: "агентское ведение →"; position: absolute; right: 0; bottom: -28px; color: rgba(255,255,255,.45); font-size: 13px; text-transform: uppercase; letter-spacing: .08em; }
+    .axis::before { content: "автоматизация ↑"; position: absolute; left: -4px; top: -26px; color: rgba(255,255,255,.45); font-size: 13px; text-transform: uppercase; letter-spacing: .08em; }
+    .dot { position: absolute; transform: translate(-50%, -50%); padding: 14px 16px; border-radius: 18px; color: #06101f; font-weight: 900; box-shadow: 0 18px 50px rgba(0,0,0,.25); white-space: nowrap; }
+    .d1 { left: 34%; top: 22%; background: linear-gradient(135deg, var(--accent), #e0f2fe); }
+    .d2 { left: 72%; top: 46%; background: linear-gradient(135deg, var(--accent2), #ede9fe); }
+    .d3 { left: 58%; top: 26%; background: linear-gradient(135deg, var(--accent3), #d1fae5); }
+    .progress { position: fixed; left: 0; top: 0; height: 4px; background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3)); width: 0%; z-index: 20; }
+    .nav { position: fixed; right: 28px; bottom: 22px; display: flex; gap: 10px; z-index: 21; }
+    button { cursor: pointer; border: 1px solid var(--line); background: rgba(255,255,255,.08); color: white; border-radius: 999px; padding: 10px 15px; font-size: 14px; backdrop-filter: blur(10px); }
+    button:hover { background: rgba(255,255,255,.14); }
+    .sources { font-size: 15px; line-height: 1.5; color: #d4dcf8; }
+    .sources a { color: #bdeaff; text-decoration: none; }
+    .sources li { margin: 10px 0; }
+    @media print {
+      body { overflow: visible; background: #0b1020; }
+      .deck { height: auto; }
+      .slide { display: block !important; position: relative; inset: auto; transform: none; page-break-after: always; margin: 0 auto; }
+      .nav, .progress { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="progress" id="progress"></div>
+  <main class="deck">
+    <section class="slide active">
+      <div class="eyebrow">Классифайды / автобизнес / подрядчики</div>
+      <h1>Сравнение трёх агентств по ведению кабинетов</h1>
+      <p class="sub">CarCopy, Четыре пикселя и ТАК / Tandem Group: публичные цены, модель работы и сильные стороны по открытым источникам.</p>
+      <div class="pillline" style="margin-top: 44px;">
+        <span class="pill">ценообразование</span><span class="pill">автоматизация</span><span class="pill">performance</span><span class="pill">сопровождение</span>
+      </div>
+      <div class="footer"><span>Исследование по открытым данным</span><span>2026</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">Executive summary</div>
+      <h2>Три похожие услуги, но разные роли для дилера</h2>
+      <div class="grid grid-3" style="margin-top: 38px;">
+        <div class="card">
+          <div class="row"><div class="logo-mark m1">C</div><h3>CarCopy</h3></div>
+          <div class="metric">IT-платформа</div>
+          <p class="label">Сильна в управлении стоком, выгрузками, звонками, чатами, CRM и аналитикой. Цена чаще привязана к ТС и модулям.</p>
+        </div>
+        <div class="card">
+          <div class="row"><div class="logo-mark m2">4</div><h3>Четыре пикселя</h3></div>
+          <div class="metric">Digital-ведение</div>
+          <p class="label">Больше агентский подход: кабинет, контент, спрос, CPA, отчеты, AutoXML и оптимизация рекламных ресурсов.</p>
+        </div>
+        <div class="card">
+          <div class="row"><div class="logo-mark m3">T</div><h3>ТАК / Tandem</h3></div>
+          <div class="metric">Performance</div>
+          <p class="label">Связка Autocloud, выгрузки, ставки, конкуренты, звонки и KPI по обращениям.</p>
+        </div>
+      </div>
+      <div class="footer"><span>Ключевой вывод</span><span>2 / 8</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">Pricing snapshot</div>
+      <h2>Публичные цены различаются не только уровнем, но и логикой тарификации</h2>
+      <table class="price-table">
+        <thead><tr><th>Агентство</th><th>Публичная цена</th><th>Что это означает</th></tr></thead>
+        <tbody>
+          <tr><td>CarCopy</td><td>400-800 ₽ за ТС; новые ТС - 5 900 ₽ за ТС; CRM - 200 000 ₽/мес за 15 аккаунтов</td><td>Модель ближе к SaaS/DMS: стоимость масштабируется от стока и подключенных модулей.</td></tr>
+          <tr><td>Четыре пикселя</td><td>Классифайды - от 28 000 ₽</td><td>Входной агентский ретейнер; итог зависит от площадок, объема и глубины сопровождения.</td></tr>
+          <tr><td>ТАК / Tandem</td><td>Продвижение с Autocloud - от 15 000 ₽/мес</td><td>Стартовая цена за продвижение с платформой; расширение зависит от задач и интеграций.</td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top: 22px; max-width: 940px;">Вывод: сравнивать “лоб в лоб” сложно. CarCopy продает инфраструктуру, 4 Пикселя - агентское ведение, Tandem - performance-процесс вокруг Autocloud.</p>
+      <div class="footer"><span>Публичные тарифы</span><span>3 / 8</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">Positioning map</div>
+      <h2>Где агентства находятся на карте “автоматизация - агентское ведение”</h2>
+      <div class="split">
+        <div>
+          <p class="note">CarCopy заметно ближе к системной автоматизации. 4 Пикселя - к агентской маркетинговой работе. Tandem занимает промежуточную performance-позицию с собственной платформой.</p>
+          <div class="pillline"><span class="pill">SaaS / DMS</span><span class="pill">AutoXML</span><span class="pill">Autocloud</span><span class="pill">CPA / KPI</span></div>
+        </div>
+        <div class="axis">
+          <div class="dot d1">CarCopy</div>
+          <div class="dot d2">4 Пикселя</div>
+          <div class="dot d3">ТАК / Tandem</div>
+        </div>
+      </div>
+      <div class="footer"><span>Интерпретация позиционирования</span><span>4 / 8</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">Agency profile 01</div>
+      <h2>CarCopy: инфраструктура для управления автобизнесом</h2>
+      <div class="split">
+        <div class="card">
+          <div class="tag">Ключевая модель</div>
+          <p class="big-quote" style="margin-top: 22px;">Не просто ведение кабинетов, а единая операционная система для стока, объявлений, коммуникаций и отчетности.</p>
+        </div>
+        <div class="stack">
+          <div class="mini"><strong>Ценообразование</strong><span>За ТС, отдельно звонки и CRM-пакет. Чем больше сток, тем ниже ставка за автомобиль.</span></div>
+          <div class="mini"><strong>Способ работы</strong><span>Автоматизация публикации, обновлений, продвижения, статистики, звонков, чатов и отчетов.</span></div>
+          <div class="mini"><strong>Когда выбирать</strong><span>Если нужен не подрядчик “на кабинет”, а системное решение для дилерского стока и бизнес-процессов.</span></div>
+        </div>
+      </div>
+      <div class="footer"><span>CarCopy</span><span>5 / 8</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">Agency profile 02</div>
+      <h2>Четыре пикселя: агентское ведение классифайдов</h2>
+      <div class="split">
+        <div class="card">
+          <div class="tag">Ключевая модель</div>
+          <p class="big-quote" style="margin-top: 22px;">Больше похоже на digital-команду, которая ведет канал: контент, спрос, CPA, аналитика и корректировки.</p>
+        </div>
+        <div class="stack">
+          <div class="mini"><strong>Ценообразование</strong><span>Публично: классифайды от 28 000 ₽. Детальная сетка не раскрыта.</span></div>
+          <div class="mini"><strong>Способ работы</strong><span>AutoXML, выгрузки, контроль данных, статистика, звонки, отчеты, оптимизация объявлений.</span></div>
+          <div class="mini"><strong>Когда выбирать</strong><span>Если важны не только выгрузки, но и маркетинговое улучшение карточек, спроса и стоимости обращения.</span></div>
+        </div>
+      </div>
+      <div class="footer"><span>Четыре пикселя</span><span>6 / 8</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">Agency profile 03</div>
+      <h2>ТАК / Tandem: performance-подход с Autocloud</h2>
+      <div class="split">
+        <div class="card">
+          <div class="tag">Ключевая модель</div>
+          <p class="big-quote" style="margin-top: 22px;">Продвижение строится вокруг автоматизации, конкурентного анализа, ставок, звонков и KPI по обращениям.</p>
+        </div>
+        <div class="stack">
+          <div class="mini"><strong>Ценообразование</strong><span>Публично: продвижение с Autocloud от 15 000 ₽/мес. Состав пакета нужно уточнять.</span></div>
+          <div class="mini"><strong>Способ работы</strong><span>XML-фиды, интеграции, управление ставками, мониторинг конкурентов, анализ звонков и отчетность.</span></div>
+          <div class="mini"><strong>Когда выбирать</strong><span>Если задача - управлять эффективностью размещения, стоимостью лида и конкурентной средой.</span></div>
+        </div>
+      </div>
+      <div class="footer"><span>ТАК / Tandem Group</span><span>7 / 8</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">Decision frame</div>
+      <h2>Как выбирать подрядчика</h2>
+      <div class="grid grid-3" style="margin-top: 38px;">
+        <div class="card"><div class="tag">Если нужен порядок в операционке</div><div class="metric">CarCopy</div><p class="label">Лучше проверить глубину CRM, интеграции с текущими системами и экономику на вашем количестве ТС.</p></div>
+        <div class="card"><div class="tag">Если нужен маркетинг канала</div><div class="metric">4 Пикселя</div><p class="label">Стоит запросить состав ретейнера: площадки, контент, отчеты, звонки, SLA и частоту оптимизаций.</p></div>
+        <div class="card"><div class="tag">Если важен performance</div><div class="metric">Tandem</div><p class="label">Нужно уточнить KPI, логику управления ставками, работу с конкурентами и стоимость расширенных модулей.</p></div>
+      </div>
+      <p style="margin-top: 26px; max-width: 980px;">Практический следующий шаг: запросить у всех трех одинаковый бриф на один и тот же объем стока, перечень площадок, рекламный бюджет и SLA. Так получится сравнить не стартовую цену, а полную стоимость владения каналом.</p>
+      <div class="footer"><span>Рекомендация</span><span>8 / 8</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">Sources & limits</div>
+      <h2>Источники и ограничения</h2>
+      <div class="card" style="margin-top: 30px;">
+        <ul class="sources">
+          <li><a href="https://carcopy.ru/" target="_blank">carcopy.ru</a> - описание платформы CarCopy.</li>
+          <li><a href="https://carcopy.ru/tariffs" target="_blank">carcopy.ru/tariffs</a> - тарифы CarCopy по ТС и звонкам.</li>
+          <li><a href="https://carcopy.ru/crm" target="_blank">carcopy.ru/crm</a> - CRM-пакеты CarCopy.</li>
+          <li><a href="https://4px.ru/" target="_blank">4px.ru</a> и <a href="https://4px.ru/services/classifieds/" target="_blank">4px.ru/services/classifieds</a> - услуги 4 Пикселя по классифайдам.</li>
+          <li><a href="https://tandemdigital.ru/o-programme-autocloud/" target="_blank">tandemdigital.ru/o-programme-autocloud</a> и <a href="https://tandemdigital.ru/uslugi/classifieds-reklama/" target="_blank">classifieds-реклама</a> - Autocloud и услуги Tandem.</li>
+        </ul>
+        <p style="margin-top: 16px;">Ограничение: публичные цены могут не включать рекламный бюджет, интеграции, дополнительные кабинеты, расширенную аналитику и индивидуальные условия.</p>
+      </div>
+      <div class="footer"><span>Проверить перед коммерческим сравнением</span><span>Appendix</span></div>
+    </section>
+  </main>
+
+  <nav class="nav">
+    <button onclick="prevSlide()">← Назад</button>
+    <button onclick="nextSlide()">Вперед →</button>
+  </nav>
+
+  <script>
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const progress = document.getElementById('progress');
+    let i = 0;
+    function show(n) {
+      i = (n + slides.length) % slides.length;
+      slides.forEach((s, idx) => s.classList.toggle('active', idx === i));
+      progress.style.width = ((i + 1) / slides.length * 100) + '%';
+    }
+    function nextSlide() { show(i + 1); }
+    function prevSlide() { show(i - 1); }
+    document.addEventListener('keydown', (e) => {
+      if (['ArrowRight', ' ', 'PageDown'].includes(e.key)) nextSlide();
+      if (['ArrowLeft', 'PageUp'].includes(e.key)) prevSlide();
+      if (e.key === 'Home') show(0);
+      if (e.key === 'End') show(slides.length - 1);
+    });
+    show(0);
+  </script>
+</body>
+</html>
