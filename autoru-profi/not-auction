@@ -1,0 +1,5 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Не аукцион</title>
+<script>location.replace("/autoru-profi.html#not-auction");</script>
+<a href="/autoru-profi.html#not-auction">Открыть раздел “Не аукцион”</a>

@@ -1,0 +1,1894 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Авто.ру Профи</title>
+  <style>
+    :root {
+      --paper: #DBD0C3;
+      --sheet: #ffffff;
+      --soft: #F5F4F4;
+      --work: #E4E9EF;
+      --panel: #F1EFF0;
+      --ink: #1C1A1C;
+      --muted: #919497;
+      --line: #D9DEE4;
+      --line-dark: #1C1A1C;
+      --red: #E60000;
+      --red-dark: #BF0E20;
+      --lime: #CCFF00;
+      --admin: #272625;
+      --shadow: 0 8px 24px rgba(0, 0, 0, .10);
+      --radius: 10px;
+      color-scheme: light;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: Inter, Arial, Helvetica, sans-serif;
+      letter-spacing: 0;
+      background:
+        linear-gradient(180deg, rgba(245, 244, 244, .72), rgba(219, 208, 195, .96)),
+        var(--paper);
+      min-height: 100vh;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background:
+        url("../autoru-profi-assets/auto-ru-car-bg.png") right -7vw top 42px / min(760px, 58vw) auto no-repeat,
+        url("../autoru-profi-assets/car-audi.png") left -150px bottom 9vh / min(560px, 42vw) auto no-repeat,
+        url("../autoru-profi-assets/car-mercedes.png") right 18vw bottom -90px / min(440px, 34vw) auto no-repeat;
+      opacity: .14;
+      filter: saturate(.9);
+      pointer-events: none;
+    }
+
+    body.modal-open { overflow: hidden; }
+
+    a { color: inherit; }
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+
+    .layout {
+      width: min(100% - 48px, 1720px);
+      margin: 0 auto;
+      padding: 28px 0 64px;
+    }
+
+    .menu-hotspot {
+      position: fixed;
+      left: 0;
+      top: 0;
+      z-index: 49;
+      width: 30px;
+      height: 100vh;
+      background: transparent;
+    }
+
+    .side-toolbar {
+      position: fixed;
+      left: 0;
+      top: 28px;
+      z-index: 50;
+      width: 248px;
+      padding: 14px;
+      border: 0;
+      border-radius: 18px;
+      background: var(--admin);
+      box-shadow: 0 18px 44px rgba(0, 0, 0, .18);
+      transform: translateX(calc(-100% - 12px));
+      transition: transform .42s ease, box-shadow .42s ease;
+      will-change: transform;
+    }
+
+    .side-toolbar::after {
+      content: none;
+    }
+
+    .side-toolbar.is-open,
+    .side-toolbar:focus-within {
+      transform: translateX(16px);
+      box-shadow: 0 24px 58px rgba(0, 0, 0, .24);
+    }
+
+    .side-toolbar.is-open::after,
+    .side-toolbar:focus-within::after {
+      opacity: 0;
+    }
+
+    .toolbar-logo {
+      display: flex;
+      align-items: center;
+      padding: 12px 12px 18px;
+      border-bottom: 1px solid rgba(255, 255, 255, .16);
+      text-decoration: none;
+    }
+
+    .logo-mark {
+      display: grid;
+      place-items: center;
+      min-width: 42px;
+      height: 34px;
+      padding: 0 8px;
+      border-radius: 8px;
+      background: var(--red);
+      color: #fff;
+      font-weight: 950;
+      font-size: .78rem;
+      line-height: 1;
+      text-transform: lowercase;
+    }
+
+    .toolbar-logo .logo-mark {
+      min-width: 116px;
+      height: 68px;
+      padding: 0 18px;
+      border-radius: 14px;
+      font-size: 1.35rem;
+      letter-spacing: 0;
+    }
+
+    .toolbar-nav {
+      display: grid;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .toolbar-nav a {
+      display: grid;
+      min-height: 44px;
+      align-items: center;
+      padding: 10px 12px;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      color: rgba(255,255,255,.62);
+      font-size: .84rem;
+      font-weight: 850;
+      line-height: 1.12;
+      text-align: left;
+      text-decoration: none;
+    }
+
+    .toolbar-nav a:hover,
+    .toolbar-nav a.is-active {
+      border-color: var(--red);
+      background: var(--red);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+
+    .section {
+      margin-top: 20px;
+      scroll-margin-top: 28px;
+    }
+
+    .section:focus { outline: 0; }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      min-height: 680px;
+      border: 0;
+      border-radius: 16px;
+      background: var(--sheet);
+      box-shadow: var(--shadow);
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 46px;
+      height: 100%;
+      background: var(--red);
+    }
+
+    .hero-top {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: minmax(0, .92fr) minmax(360px, .42fr);
+      gap: 40px;
+      align-items: start;
+      padding: 48px 56px 24px;
+    }
+
+    .brand-row {
+      display: flex;
+      flex-wrap: wrap;
+      display: grid;
+      gap: 14px;
+      align-items: start;
+      margin-bottom: 18px;
+    }
+
+    .wordmark {
+      display: inline-flex;
+      width: fit-content;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 2px solid var(--red);
+      color: var(--red);
+      font-size: .88rem;
+      font-weight: 900;
+      line-height: 1;
+      text-transform: none;
+    }
+
+    .wordmark .logo-mark {
+      width: auto;
+      min-width: 58px;
+      height: 24px;
+      font-size: .76rem;
+    }
+
+    .brand-divider {
+      display: none;
+    }
+
+    h1, h2, h3, p { margin-top: 0; }
+    h1, h2 { font-family: Inter, Arial, Helvetica, sans-serif; letter-spacing: 0; }
+
+    h1 {
+      max-width: 760px;
+      margin: 0;
+      font-size: clamp(3.4rem, 7vw, 6.8rem);
+      font-weight: 900;
+      line-height: .92;
+    }
+
+    .hero-subtitle {
+      max-width: 760px;
+      margin: 0;
+      font-size: clamp(1.35rem, 2.4vw, 2.55rem);
+      font-weight: 850;
+      line-height: 1.06;
+    }
+
+    .hero-copy {
+      max-width: 720px;
+      color: var(--muted);
+      font-size: 1.12rem;
+      line-height: 1.38;
+    }
+
+    .hero-model {
+      max-width: 780px;
+      margin-top: 18px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--soft);
+    }
+
+    .model-label {
+      margin-bottom: 10px;
+      color: var(--red);
+      font-size: .78rem;
+      font-weight: 950;
+      text-transform: uppercase;
+    }
+
+    .model-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .model-item {
+      min-height: 94px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fff;
+    }
+
+    .model-item strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: .86rem;
+      line-height: 1.18;
+    }
+
+    .model-item span {
+      display: block;
+      color: var(--muted);
+      font-size: .76rem;
+      line-height: 1.28;
+    }
+
+    .hero-actions,
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-top: 18px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 40px;
+      padding: 10px 14px;
+      border: 1px solid var(--ink);
+      border-radius: 10px;
+      background: #fff;
+      color: var(--ink);
+      font-size: .86rem;
+      font-weight: 900;
+      text-decoration: none;
+      transition: transform .16s ease, box-shadow .16s ease, background .16s ease, color .16s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(0,0,0,.10);
+    }
+
+    .btn.primary {
+      border-color: var(--ink);
+      background: var(--ink);
+      color: #fff;
+    }
+
+    .btn.primary:hover { background: var(--red); border-color: var(--red); }
+
+    .trust-card {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 16px;
+      align-items: center;
+      max-width: 440px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #fff;
+      box-shadow: var(--shadow);
+    }
+
+    .shield {
+      display: grid;
+      place-items: center;
+      width: 54px;
+      height: 62px;
+      border: 2px solid var(--ink);
+      border-radius: 14px;
+      font-size: 1.7rem;
+      font-weight: 950;
+    }
+
+    .trust-card strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 1.06rem;
+      line-height: 1.2;
+    }
+
+    .trust-card strong span { color: var(--red); }
+    .trust-card p { margin: 0; color: var(--muted); font-size: .82rem; }
+
+    .hero-car {
+      position: relative;
+      min-height: 250px;
+      margin-top: 18px;
+      border-radius: 18px;
+      background: url("../autoru-profi-assets/auto-ru-car-bg.png") center / contain no-repeat;
+    }
+
+    .hero-car::before {
+      content: none;
+    }
+
+    .hero-car::after {
+      content: none;
+    }
+
+    .hero-points {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      padding: 0 56px 28px;
+    }
+
+    .point {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      padding: 16px;
+      border-radius: 14px;
+      background: var(--panel);
+      align-items: center;
+    }
+
+    .point-icon {
+      display: grid;
+      place-items: center;
+      width: 44px;
+      height: 44px;
+      border: 1px solid var(--ink);
+      border-radius: 50%;
+      background: #fff;
+      font-weight: 950;
+    }
+
+    .point strong { display: block; font-size: .98rem; line-height: 1.12; }
+    .point span { display: block; margin-top: 4px; color: var(--muted); font-size: .76rem; line-height: 1.2; }
+
+    .catalog-board {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 245px minmax(0, 1fr) 575px;
+      gap: 0;
+      min-height: 650px;
+      margin: 0 28px 28px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--work);
+      box-shadow: var(--shadow);
+    }
+
+    .catalog-topbar {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: 190px minmax(0, 1fr) auto;
+      gap: 14px;
+      align-items: center;
+      min-height: 66px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--line);
+      background: #fff;
+    }
+
+    .top-logo {
+      display: inline-flex;
+      gap: 10px;
+      align-items: center;
+      font-size: 1.25rem;
+      font-weight: 950;
+      text-transform: uppercase;
+    }
+
+    .top-logo .logo-mark {
+      width: 34px;
+      height: 30px;
+      border-radius: 8px;
+      font-size: 1.1rem;
+    }
+
+    .search-wrap {
+      position: relative;
+    }
+
+    .search-wrap input {
+      width: 100%;
+      min-height: 40px;
+      padding: 10px 44px 10px 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--soft);
+      color: var(--ink);
+      outline: 0;
+    }
+
+    .search-wrap span {
+      position: absolute;
+      right: 13px;
+      top: 50%;
+      font-weight: 950;
+      transform: translateY(-50%);
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      color: var(--muted);
+      font-size: .78rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .top-action {
+      display: inline-flex;
+      align-items: center;
+      min-height: 34px;
+      padding: 7px 10px;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      background: #fff;
+    }
+
+    .filters {
+      padding: 16px;
+      border-right: 1px solid var(--line);
+      background: var(--soft);
+    }
+
+    .filter-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      font-weight: 950;
+    }
+
+    .reset { color: var(--red); font-size: .72rem; font-weight: 900; }
+
+    .filter {
+      margin-bottom: 9px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .filter-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: .78rem;
+      font-weight: 900;
+    }
+
+    .filter-value {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: .76rem;
+    }
+
+    .filter-pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .filter-pair input {
+      width: 100%;
+      min-height: 33px;
+      padding: 7px 8px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--muted);
+      font-size: .74rem;
+    }
+
+    .filter-chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      margin: 7px 4px 0 0;
+      padding: 6px 8px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+      color: var(--muted);
+      font-size: .72rem;
+      font-weight: 850;
+      transition: .16s ease;
+    }
+
+    .filter-chip:hover,
+    .filter-chip.is-active {
+      border-color: var(--red);
+      background: var(--red);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+
+    .catalog-list {
+      display: grid;
+      align-content: start;
+      gap: 14px;
+      padding: 16px;
+      background: var(--paper);
+    }
+
+    .catalog-list-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .catalog-list-head strong { font-size: 1rem; }
+
+    .list-tools {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      color: var(--muted);
+      font-size: .76rem;
+      font-weight: 850;
+    }
+
+    .tool-pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 32px;
+      padding: 7px 10px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+    }
+
+    .vehicle-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .vehicle-card {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+    }
+
+    .vehicle-card:hover {
+      border-color: #bfc8c3;
+      box-shadow: var(--shadow);
+      transform: translateY(-2px);
+    }
+
+    .car-photo {
+      position: relative;
+      height: 152px;
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, rgba(28,26,28,0) 40%, rgba(28,26,28,.34) 100%),
+        var(--photo, url("../autoru-profi-assets/car-bmw.png")) center / cover no-repeat;
+    }
+
+    .car-photo::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(0,0,0,.18));
+    }
+
+    .car-photo::after {
+      content: none;
+    }
+
+    .vehicle-card:nth-child(1) .car-photo { --photo: url("../autoru-profi-assets/car-bmw.png"); }
+    .vehicle-card:nth-child(2) .car-photo { --photo: url("../autoru-profi-assets/car-rav4.png"); }
+    .vehicle-card:nth-child(3) .car-photo { --photo: url("../autoru-profi-assets/car-kia.png"); }
+    .vehicle-card:nth-child(4) .car-photo { --photo: url("../autoru-profi-assets/car-audi.png"); }
+    .vehicle-card:nth-child(5) .car-photo { --photo: url("../autoru-profi-assets/car-mercedes.png"); }
+    .vehicle-card:nth-child(6) .car-photo { --photo: url("../autoru-profi-assets/car-tiguan.png"); }
+
+    .card-body {
+      display: grid;
+      gap: 7px;
+      padding: 11px;
+    }
+
+    .badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 22px;
+      padding: 4px 7px;
+      border: 1px solid currentColor;
+      border-radius: 999px;
+      background: #fff;
+      color: var(--red);
+      font-size: .68rem;
+      font-weight: 950;
+      line-height: 1;
+    }
+
+    .badge.green { color: var(--ink); background: var(--lime); border-color: var(--lime); }
+    .badge.amber { color: var(--ink); }
+    .badge.blue { color: var(--muted); }
+
+    .vehicle-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: start;
+    }
+
+    .vehicle-title h3 {
+      margin: 0;
+      font-size: .92rem;
+      line-height: 1.18;
+    }
+
+    .vehicle-title span,
+    .meta,
+    .desc {
+      color: var(--muted);
+      font-size: .72rem;
+      line-height: 1.3;
+    }
+
+    .price {
+      margin-top: 2px;
+      font-size: 1.05rem;
+      font-weight: 950;
+    }
+
+    .desc {
+      min-height: 34px;
+    }
+
+    .card-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+    }
+
+    .small-btn {
+      min-height: 33px;
+      padding: 7px 8px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--ink);
+      font-size: .72rem;
+      font-weight: 900;
+      transition: .16s ease;
+    }
+
+    .small-btn:hover {
+      transform: translateY(-1px);
+      border-color: var(--ink);
+    }
+
+    .small-btn.red {
+      border-color: var(--red);
+      background: var(--red);
+      color: #fff;
+    }
+
+    .catalog-note {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      min-height: 48px;
+      padding: 12px 16px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      color: var(--muted);
+      font-size: .82rem;
+      font-weight: 850;
+    }
+
+    .lock {
+      display: grid;
+      place-items: center;
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      background: var(--paper);
+      color: var(--ink);
+      font-size: .8rem;
+    }
+
+    .lot-preview {
+      display: grid;
+      align-content: start;
+      gap: 14px;
+      padding: 14px;
+      border-left: 1px solid var(--line);
+      background: var(--soft);
+    }
+
+    .preview-card,
+    .contact-panel,
+    .name-panel,
+    .info-band,
+    .content-card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      box-shadow: none;
+    }
+
+    .preview-card {
+      padding: 14px;
+    }
+
+    .preview-card h2,
+    .contact-panel h2,
+    .content-card h2 {
+      margin: 0 0 12px;
+      font-size: 1rem;
+      font-family: Inter, Arial, Helvetica, sans-serif;
+    }
+
+    .lot-card-layout {
+      display: grid;
+      grid-template-columns: minmax(0, .78fr) minmax(0, 1fr);
+      gap: 14px;
+    }
+
+    .big-photo {
+      min-height: 218px;
+      border-radius: 8px;
+      background:
+        linear-gradient(180deg, rgba(28,26,28,0) 42%, rgba(28,26,28,.28) 100%),
+        url("../autoru-profi-assets/car-bmw.png") center / cover no-repeat;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .big-photo::before {
+      content: none;
+    }
+
+    .thumbs {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .thumb {
+      height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: url("../autoru-profi-assets/car-bmw.png") center / cover no-repeat;
+    }
+
+    .lot-details {
+      display: grid;
+      gap: 10px;
+      align-content: start;
+    }
+
+    .lot-details h3 {
+      margin: 0;
+      font-size: 1.28rem;
+      line-height: 1.05;
+    }
+
+    .lot-price {
+      font-size: 1.65rem;
+      font-weight: 950;
+    }
+
+    .lot-meta {
+      color: var(--muted);
+      font-size: .78rem;
+    }
+
+    .damage-map {
+      min-height: 110px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background:
+        radial-gradient(circle at 50% 22%, rgba(230,0,0,.16) 0 15%, transparent 16%),
+        linear-gradient(90deg, transparent 48%, #D9DEE4 48% 52%, transparent 52%),
+        linear-gradient(#fff, #F5F4F4);
+    }
+
+    .mini-tabs {
+      display: grid;
+      grid-template-columns: 150px 1fr;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .mini-nav {
+      display: grid;
+      align-content: start;
+      gap: 6px;
+    }
+
+    .mini-tab {
+      min-height: 34px;
+      padding: 8px 10px;
+      border: 1px solid transparent;
+      border-radius: 7px;
+      background: #fff;
+      color: var(--muted);
+      font-size: .76rem;
+      font-weight: 900;
+      text-align: left;
+    }
+
+    .mini-tab:hover,
+    .mini-tab.is-active {
+      border-color: var(--line);
+      background: var(--work);
+      color: var(--ink);
+    }
+
+    .mini-panel {
+      min-height: 128px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fff;
+    }
+
+    .mini-panel[hidden] { display: none; }
+
+    .clean-list {
+      display: grid;
+      gap: 7px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      color: var(--muted);
+      font-size: .78rem;
+      line-height: 1.35;
+    }
+
+    .clean-list li {
+      display: grid;
+      grid-template-columns: 16px 1fr;
+      gap: 8px;
+    }
+
+    .clean-list li::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      margin-top: 6px;
+      border-radius: 50%;
+      background: var(--red);
+    }
+
+    .contact-panel {
+      padding: 14px;
+    }
+
+    .pricing-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 9px;
+    }
+
+    .plan {
+      position: relative;
+      display: grid;
+      gap: 8px;
+      min-height: 130px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      transition: .16s ease;
+    }
+
+    .plan:hover,
+    .plan.is-selected {
+      border-color: var(--red);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+
+    .plan.is-selected::before {
+      content: "Популярный";
+      position: absolute;
+      left: 12px;
+      top: -10px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: var(--red);
+      color: #fff;
+      font-size: .64rem;
+      font-weight: 950;
+    }
+
+    .plan strong { font-size: .82rem; }
+    .plan small { color: var(--muted); font-size: .68rem; }
+    .plan-price { font-size: 1rem; font-weight: 950; }
+
+    .name-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      padding: 12px;
+    }
+
+    .name-tile {
+      display: grid;
+      place-items: center;
+      min-height: 76px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      font-size: 1.4rem;
+      font-weight: 950;
+    }
+
+    .name-tile.is-main { border-color: var(--red); color: var(--red); }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: end;
+      margin-bottom: 12px;
+    }
+
+    .section-title h2 {
+      margin: 0;
+      font-size: clamp(2.4rem, 5vw, 4.6rem);
+      font-weight: 900;
+      line-height: .96;
+    }
+
+    .section-title p {
+      max-width: 680px;
+      margin: 8px 0 0;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 7px 10px;
+      border: 1px solid var(--line-dark);
+      border-radius: 999px;
+      background: #fff;
+      font-size: .74rem;
+      font-weight: 950;
+      white-space: nowrap;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .span-4 { grid-column: span 4; }
+    .span-5 { grid-column: span 5; }
+    .span-6 { grid-column: span 6; }
+    .span-7 { grid-column: span 7; }
+    .span-12 { grid-column: span 12; }
+
+    .content-card {
+      padding: 22px;
+      border-left: 6px solid transparent;
+    }
+
+    .content-card.red {
+      border-color: var(--red-dark);
+      background: var(--red);
+      color: #fff;
+    }
+
+    .content-card.red .clean-list,
+    .content-card.red p { color: rgba(255,255,255,.82); }
+
+    .content-card.red .clean-list li::before { background: #fff; }
+
+    .full-lot {
+      display: grid;
+      grid-template-columns: minmax(340px, .9fr) minmax(0, 1fr);
+      gap: 14px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #fff;
+      box-shadow: var(--shadow);
+    }
+
+    .full-photo {
+      min-height: 470px;
+      border-radius: 12px;
+      background:
+        linear-gradient(180deg, rgba(28,26,28,0) 42%, rgba(28,26,28,.30) 100%),
+        url("../autoru-profi-assets/car-bmw.png") center / cover no-repeat;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .full-photo::before {
+      content: none;
+    }
+
+    .full-photo::after {
+      content: none;
+    }
+
+    .full-thumbs {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .full-thumbs .thumb {
+      height: 64px;
+    }
+
+    .full-info {
+      display: grid;
+      align-content: start;
+      gap: 14px;
+    }
+
+    .kv-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .kv {
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--soft);
+    }
+
+    .kv strong { display: block; font-size: .92rem; }
+    .kv span { display: block; margin-top: 4px; color: var(--muted); font-size: .72rem; }
+
+    .info-columns {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .compare {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .metric {
+      min-height: 104px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      box-shadow: none;
+    }
+
+    .metric strong {
+      display: block;
+      color: var(--red);
+      font-family: Inter, Arial, Helvetica, sans-serif;
+      font-size: 2rem;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .metric span {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: .84rem;
+      line-height: 1.3;
+    }
+
+    .economy-shell {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 14px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--soft);
+      box-shadow: var(--shadow);
+    }
+
+    .economy-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .economy-card {
+      min-height: 176px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+    }
+
+    .economy-card h3 {
+      margin: 0;
+      color: var(--muted);
+      font-size: .84rem;
+      font-weight: 950;
+      line-height: 1.16;
+    }
+
+    .economy-value {
+      display: block;
+      margin-top: 22px;
+      color: var(--red);
+      font-size: clamp(2.1rem, 4vw, 3.35rem);
+      font-weight: 950;
+      line-height: .9;
+    }
+
+    .economy-card p {
+      margin: 0;
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: .86rem;
+      line-height: 1.28;
+    }
+
+    .economy-model {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(340px, .48fr);
+      gap: 14px;
+    }
+
+    .formula-panel,
+    .revenue-panel,
+    .market-note {
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+    }
+
+    .formula-panel {
+      display: grid;
+      gap: 12px;
+    }
+
+    .formula-panel h3,
+    .revenue-panel h3,
+    .market-note h3 {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 950;
+      line-height: 1.16;
+    }
+
+    .formula-line {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      min-height: 54px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      background: var(--soft);
+      font-size: clamp(1.1rem, 2vw, 1.7rem);
+      font-weight: 950;
+      line-height: 1.1;
+    }
+
+    .formula-line strong {
+      color: var(--red);
+    }
+
+    .formula-line.secondary {
+      font-size: clamp(1rem, 1.55vw, 1.25rem);
+    }
+
+    .revenue-panel {
+      display: grid;
+      gap: 16px;
+      border-color: var(--red);
+      background:
+        linear-gradient(135deg, rgba(230, 0, 0, .10), rgba(255,255,255,0) 44%),
+        #fff;
+    }
+
+    .revenue-row {
+      display: grid;
+      gap: 6px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+    }
+
+    .revenue-row:first-of-type {
+      padding-top: 0;
+      border-top: 0;
+    }
+
+    .revenue-row span {
+      color: var(--muted);
+      font-size: .84rem;
+      font-weight: 900;
+    }
+
+    .revenue-row strong {
+      color: var(--red);
+      font-size: clamp(1.9rem, 3.4vw, 3rem);
+      font-weight: 950;
+      line-height: .95;
+    }
+
+    .revenue-panel p {
+      margin: 0;
+      color: var(--muted);
+      font-size: .82rem;
+      line-height: 1.35;
+    }
+
+    .market-note {
+      border-style: dashed;
+      background: rgba(255, 255, 255, .72);
+    }
+
+    .market-note h3 {
+      color: var(--red);
+    }
+
+    .market-note p {
+      max-width: 980px;
+      margin: 8px 0 0;
+      color: var(--muted);
+      line-height: 1.42;
+    }
+
+    .economy-steps {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .economy-step {
+      min-height: 86px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fff;
+    }
+
+    .economy-step strong {
+      display: block;
+      font-size: .86rem;
+      line-height: 1.18;
+    }
+
+    .economy-step span {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: .78rem;
+      line-height: 1.28;
+    }
+
+    .launch-roadmap {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--soft);
+      box-shadow: var(--shadow);
+    }
+
+    .launch-roadmap::before {
+      content: "";
+      position: absolute;
+      left: 56px;
+      right: 56px;
+      top: 71px;
+      height: 2px;
+      background: var(--red);
+      opacity: .28;
+    }
+
+    .launch-step {
+      position: relative;
+      z-index: 1;
+      min-height: 300px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+    }
+
+    .launch-step::after {
+      content: "→";
+      position: absolute;
+      top: 39px;
+      right: -22px;
+      display: grid;
+      place-items: center;
+      width: 30px;
+      height: 30px;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      background: #fff;
+      color: var(--red);
+      font-weight: 950;
+      line-height: 1;
+    }
+
+    .launch-step:last-child::after {
+      content: none;
+    }
+
+    .launch-num {
+      display: grid;
+      place-items: center;
+      width: 56px;
+      height: 56px;
+      margin-bottom: 22px;
+      border: 2px solid var(--red);
+      border-radius: 50%;
+      background: #fff;
+      color: var(--red);
+      font-size: 1.25rem;
+      font-weight: 950;
+    }
+
+    .launch-step h3 {
+      margin: 0;
+      font-size: clamp(1.16rem, 1.5vw, 1.45rem);
+      line-height: 1.05;
+    }
+
+    .launch-term {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      margin-top: 12px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: var(--soft);
+      color: var(--ink);
+      font-size: .78rem;
+      font-weight: 950;
+      line-height: 1.15;
+    }
+
+    .launch-step p {
+      margin: 16px 0 0;
+      color: var(--muted);
+      font-size: .9rem;
+      line-height: 1.38;
+    }
+
+    .launch-milestone {
+      display: grid;
+      grid-template-columns: minmax(240px, .34fr) minmax(0, 1fr);
+      gap: 18px;
+      align-items: center;
+      margin-top: 14px;
+      padding: 22px;
+      border: 1px solid var(--red);
+      border-radius: 16px;
+      background:
+        linear-gradient(135deg, rgba(230, 0, 0, .10), rgba(255,255,255,0) 38%),
+        #fff;
+      box-shadow: var(--shadow);
+    }
+
+    .launch-milestone span {
+      display: block;
+      color: var(--muted);
+      font-size: .82rem;
+      font-weight: 950;
+    }
+
+    .launch-milestone strong {
+      display: block;
+      margin-top: 6px;
+      color: var(--red);
+      font-size: clamp(2rem, 4vw, 3.3rem);
+      font-weight: 950;
+      line-height: .95;
+    }
+
+    .launch-milestone p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.42;
+    }
+
+    .success-list {
+      display: grid;
+      gap: 0;
+      overflow: hidden;
+      border: 1px solid rgba(28, 26, 28, .10);
+      border-radius: 16px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.88), rgba(255,255,255,.78)),
+        var(--sheet);
+      box-shadow: var(--shadow);
+    }
+
+    .success-row {
+      display: grid;
+      grid-template-columns: 108px minmax(220px, .42fr) minmax(0, 1fr);
+      gap: 24px;
+      align-items: start;
+      padding: 26px 30px;
+      border-bottom: 1px solid rgba(28, 26, 28, .10);
+    }
+
+    .success-row:last-child {
+      border-bottom: 0;
+    }
+
+    .success-row strong {
+      color: var(--red);
+      font-size: clamp(2.2rem, 4vw, 3.8rem);
+      font-weight: 900;
+      line-height: .9;
+    }
+
+    .success-row h3 {
+      margin: 4px 0 0;
+      font-size: clamp(1.25rem, 2vw, 1.7rem);
+      line-height: 1.08;
+    }
+
+    .success-row p {
+      max-width: 760px;
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.35;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: none;
+      place-items: center;
+      padding: 18px;
+      background: rgba(17,17,17,.56);
+    }
+
+    .modal.is-open { display: grid; }
+
+    .modal-card {
+      width: min(520px, 100%);
+      padding: 24px;
+      border: 1px solid var(--line-dark);
+      border-radius: 16px;
+      background: #fff;
+      box-shadow: 0 28px 80px rgba(0,0,0,.24);
+    }
+
+    .modal-card h2 {
+      margin: 0 0 8px;
+      font-size: 2rem;
+    }
+
+    .modal-card p {
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    @media (max-width: 1440px) {
+      .layout { padding-left: 0; }
+      .catalog-board { grid-template-columns: 220px minmax(0, 1fr) 500px; }
+      .vehicle-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 1180px) {
+      .layout { padding-left: 0; padding-bottom: 96px; }
+      .side-toolbar {
+        left: 12px;
+        right: 12px;
+        top: auto;
+        bottom: 12px;
+        width: auto;
+        padding: 8px;
+        transform: none;
+      }
+      .menu-hotspot { display: none; }
+      .side-toolbar::after { display: none; }
+      .toolbar-logo { display: none; }
+      .toolbar-nav {
+        display: flex;
+        gap: 6px;
+        margin: 0;
+        overflow-x: auto;
+      }
+      .toolbar-nav a {
+        min-width: 96px;
+        min-height: 36px;
+      }
+      .hero-top,
+      .catalog-board,
+      .full-lot,
+      .economy-shell,
+      .economy-model,
+      .launch-roadmap,
+      .launch-milestone {
+        grid-template-columns: 1fr;
+      }
+      .catalog-topbar,
+      .lot-card-layout,
+      .mini-tabs,
+      .pricing-row {
+        grid-template-columns: 1fr;
+      }
+      .filters,
+      .lot-preview {
+        border: 0;
+        border-top: 1px solid var(--line);
+      }
+      .hero-points,
+      .model-grid,
+      .economy-grid,
+      .economy-steps,
+      .metric-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .launch-roadmap {
+        gap: 10px;
+      }
+      .launch-roadmap::before,
+      .launch-step::after {
+        content: none;
+      }
+      .launch-step {
+        min-height: 0;
+      }
+      .success-row {
+        grid-template-columns: 82px minmax(0, 1fr);
+        gap: 14px 18px;
+      }
+      .success-row p {
+        grid-column: 2;
+      }
+      .span-4,
+      .span-5,
+      .span-6,
+      .span-7 {
+        grid-column: span 12;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .layout {
+        width: min(100% - 18px, 1720px);
+        padding-top: 10px;
+      }
+      .hero-top { padding: 20px 18px 14px; }
+      .brand-row { gap: 14px; }
+      .brand-divider { display: none; }
+      .hero-points,
+      .model-grid,
+      .vehicle-grid,
+      .kv-grid,
+      .info-columns,
+      .compare,
+      .metric-grid,
+      .economy-grid,
+      .economy-model,
+      .economy-steps,
+      .launch-roadmap,
+      .launch-milestone,
+      .name-grid {
+        grid-template-columns: 1fr;
+      }
+      .launch-roadmap {
+        padding-left: 24px;
+      }
+      .launch-roadmap::before {
+        content: "";
+        left: 31px;
+        right: auto;
+        top: 34px;
+        bottom: 34px;
+        width: 2px;
+        height: auto;
+      }
+      .launch-step {
+        padding-left: 52px;
+      }
+      .launch-num {
+        position: absolute;
+        left: -12px;
+        top: 18px;
+        width: 42px;
+        height: 42px;
+        margin: 0;
+        font-size: 1rem;
+      }
+      .success-row {
+        grid-template-columns: 1fr;
+        padding: 22px;
+      }
+      .success-row p {
+        grid-column: auto;
+      }
+      .catalog-board { margin: 0 10px 16px; }
+      .section-title { display: grid; }
+      .full-photo { min-height: 320px; }
+      .btn,
+      .small-btn { width: 100%; }
+      .card-actions { grid-template-columns: 1fr; }
+      .modal-actions { display: grid; }
+    }
+  </style>
+</head>
+<body data-page="economy">
+  <div class="menu-hotspot" aria-hidden="true"></div>
+  <aside class="side-toolbar" aria-label="Навигация Авто.ру Профи">
+    <a class="toolbar-logo" href="../autoru-profi.html#concept" aria-label="Auto.ru">
+      <span class="logo-mark">auto.ru</span>
+    </a>
+    <nav class="toolbar-nav">
+      <a href="../autoru-profi.html#concept" data-page="concept">Концепт</a>
+      <a href="../autoru-profi.html#catalog-page" data-page="catalog">Каталог</a>
+      <a href="../autoru-profi.html#vehicle-card" data-page="vehicle-card">Карточка авто</a>
+      <a href="../autoru-profi.html#subscription" data-page="subscription">Подписка</a>
+      <a href="../autoru-profi.html#dealer" data-page="dealer">Для дилера</a>
+      <a href="../autoru-profi.html#buyer" data-page="buyer">Для покупателя</a>
+      <a href="../autoru-profi.html#not-auction" data-page="not-auction">Не аукцион</a>
+      <a class="is-active" aria-current="page" href="../autoru-profi.html#economy" data-page="economy">Экономика</a>
+      <a href="../autoru-profi.html#launch" data-page="launch">Запуск</a>
+      <a href="../autoru-profi.html#mvp" data-page="mvp">MVP</a>
+      <a href="../autoru-profi.html#metrics" data-page="metrics">Метрики</a>
+    </nav>
+  </aside>
+
+  <main class="layout">
+<section class="section" id="economy">
+      <div class="section-title"><div><h2>Экономическая эффективность бизнес-модели</h2><p>Предварительный расчёт сделан только от базы профпродавцов Auto.ru. Реальная ёмкость может быть выше за счёт уникальных профессиональных продавцов на Avito и Drom, но для точной оценки нужна дедупликация аудитории.</p></div><span class="tag">economics</span></div>
+      <div class="economy-shell">
+        <div class="economy-steps">
+          <div class="economy-step"><strong>Вводные</strong><span>Берём только базу Auto.ru как осторожный ориентир.</span></div>
+          <div class="economy-step"><strong>Расчёт</strong><span>Проверяем подписочную модель при проникновении 5%.</span></div>
+          <div class="economy-step"><strong>Итоговая выручка</strong><span>Считаем месячный и годовой потенциал подписки.</span></div>
+          <div class="economy-step"><strong>Оговорка по рынку</strong><span>Avito и Drom могут увеличить ёмкость после дедупликации.</span></div>
+        </div>
+        <div class="economy-grid">
+          <article class="economy-card"><h3>База Auto.ru</h3><span class="economy-value">43 090</span><p>профилей перекупов и профессиональных продавцов</p></article>
+          <article class="economy-card"><h3>Целевая доля</h3><span class="economy-value">5%</span><p>осторожная гипотеза активных пользователей сервиса</p></article>
+          <article class="economy-card"><h3>Платящие подписчики</h3><span class="economy-value">2 155</span><p>расчётная база подписчиков при проникновении 5%</p></article>
+          <article class="economy-card"><h3>Подписка</h3><span class="economy-value">5 000 ₽</span><p>стоимость доступа в месяц</p></article>
+        </div>
+        <div class="economy-model">
+          <div class="formula-panel">
+            <h3>Расчёт</h3>
+            <div class="formula-line">43 090 × 5% × 5 000 ₽ = <strong>10,8 млн ₽ / мес.</strong></div>
+            <div class="formula-line secondary">10,8 млн ₽ × 12 = <strong>129,3 млн ₽ / год</strong></div>
+          </div>
+          <div class="revenue-panel">
+            <h3>Итоговая выручка</h3>
+            <div class="revenue-row"><span>Месячная выручка</span><strong>10,8 млн ₽ / мес.</strong></div>
+            <div class="revenue-row"><span>Годовая выручка</span><strong>129,3 млн ₽ / год</strong></div>
+            <p>Расчёт учитывает только подписочную модель и не включает потенциальный доход от продвижения лотов внутри закрытого каталога.</p>
+          </div>
+        </div>
+        <div class="market-note">
+          <h3>Важно</h3>
+          <p>Расчёт построен на базе Auto.ru как доступном ориентире. Общая рыночная ёмкость может быть выше, так как часть профессиональных продавцов присутствует только на Avito или Drom. Для точного TAM/SAM/SOM нужна дедупликация профилей между площадками.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal" id="contactModal" role="dialog" aria-modal="true" aria-labelledby="contactTitle">
+    <div class="modal-card">
+      <h2 id="contactTitle">Контакты дилера</h2>
+      <p>Контакты дилера доступны по подписке для проверенных профессиональных покупателей.</p>
+      <div class="modal-actions">
+        <button class="btn" type="button" data-close-modal>Закрыть</button>
+        <a class="btn primary" href="../autoru-profi.html#subscription" data-close-modal>Выбрать тариф</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const navLinks = Array.from(document.querySelectorAll(".toolbar-nav a"));
+    const currentPage = document.body.dataset.page || "concept";
+    const sideToolbar = document.querySelector(".side-toolbar");
+    const menuHotspot = document.querySelector(".menu-hotspot");
+    let toolbarHideTimer = null;
+
+    navLinks.forEach(link => {
+      const isActive = link.dataset.page === currentPage;
+      link.classList.toggle("is-active", isActive);
+      if (isActive) link.setAttribute("aria-current", "page");
+      else link.removeAttribute("aria-current");
+    });
+
+    const openToolbar = () => {
+      clearTimeout(toolbarHideTimer);
+      sideToolbar.classList.add("is-open");
+    };
+
+    const scheduleToolbarClose = () => {
+      clearTimeout(toolbarHideTimer);
+      toolbarHideTimer = setTimeout(() => {
+        sideToolbar.classList.remove("is-open");
+      }, 2000);
+    };
+
+    sideToolbar.addEventListener("mouseenter", openToolbar);
+    sideToolbar.addEventListener("mouseleave", scheduleToolbarClose);
+    sideToolbar.addEventListener("focusin", openToolbar);
+    sideToolbar.addEventListener("focusout", scheduleToolbarClose);
+    menuHotspot.addEventListener("mouseenter", openToolbar);
+    menuHotspot.addEventListener("mouseleave", scheduleToolbarClose);
+
+    document.querySelectorAll(".filter-chip").forEach(chip => {
+      chip.addEventListener("click", () => chip.classList.toggle("is-active"));
+    });
+
+    const lotTabs = Array.from(document.querySelectorAll("[data-lot-tab]"));
+    const lotPanels = Array.from(document.querySelectorAll("[data-lot-panel]"));
+    const setLotTab = (name) => {
+      lotTabs.forEach(tab => tab.classList.toggle("is-active", tab.dataset.lotTab === name));
+      lotPanels.forEach(panel => { panel.hidden = panel.dataset.lotPanel !== name; });
+    };
+    lotTabs.forEach(tab => tab.addEventListener("click", () => setLotTab(tab.dataset.lotTab)));
+    document.querySelectorAll(".js-diag").forEach(button => {
+      button.addEventListener("click", () => {
+        setLotTab("diagnostics");
+        const catalogTarget = document.querySelector("#catalog");
+        if (catalogTarget) catalogTarget.scrollIntoView({ behavior: "smooth", block: "start" });
+        else window.location.href = "../autoru-profi.html#catalog-page";
+      });
+    });
+
+    document.querySelectorAll(".plan").forEach(plan => {
+      plan.addEventListener("click", () => {
+        document.querySelectorAll(".plan").forEach(item => item.classList.remove("is-selected"));
+        plan.classList.add("is-selected");
+      });
+    });
+
+    const modal = document.getElementById("contactModal");
+    const openModal = () => {
+      modal.classList.add("is-open");
+      document.body.classList.add("modal-open");
+      modal.querySelector("[data-close-modal]").focus();
+    };
+    const closeModal = () => {
+      modal.classList.remove("is-open");
+      document.body.classList.remove("modal-open");
+    };
+
+    document.querySelectorAll(".js-contact").forEach(button => button.addEventListener("click", openModal));
+    document.querySelectorAll("[data-close-modal]").forEach(button => button.addEventListener("click", closeModal));
+    modal.addEventListener("click", event => { if (event.target === modal) closeModal(); });
+    document.addEventListener("keydown", event => { if (event.key === "Escape") closeModal(); });
+  </script>
+</body>
+</html>

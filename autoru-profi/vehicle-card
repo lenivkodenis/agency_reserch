@@ -1,0 +1,5 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Карточка авто</title>
+<script>location.replace("/autoru-profi.html#vehicle-card");</script>
+<a href="/autoru-profi.html#vehicle-card">Открыть карточку авто</a>

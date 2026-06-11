@@ -1,0 +1,5 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Запуск</title>
+<script>location.replace("/autoru-profi.html#launch");</script>
+<a href="/autoru-profi.html#launch">Открыть запуск</a>

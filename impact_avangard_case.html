@@ -1,0 +1,925 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Кейс группы компаний Авангард | Haval и Tank | 1 квартал 2026 года</title>
+  <style>
+    :root {
+      --red: #e60000;
+      --black: #080808;
+      --white: #ffffff;
+      --ink: #151515;
+      --muted: #717171;
+      --line: #e8e8e8;
+      --soft: #f4f7fb;
+      --soft-blue: #eaf0f8;
+      --lime: #ccff00;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      background: #d9d9d9;
+      color: var(--ink);
+      font-family: Inter, Arial, Helvetica, sans-serif;
+      letter-spacing: 0;
+    }
+
+    body {
+      display: grid;
+      gap: 28px;
+      padding: 28px;
+    }
+
+    .slide {
+      width: min(100%, 1280px);
+      aspect-ratio: 16 / 9;
+      margin: 0 auto;
+      background: var(--white);
+      overflow: hidden;
+      position: relative;
+      display: grid;
+      grid-template-rows: 76px 1fr;
+      box-shadow: 0 18px 60px rgba(0,0,0,.18);
+    }
+
+    .slide.red { background: var(--red); color: var(--white); }
+    .slide.black { background: var(--black); color: var(--white); }
+    .slide.soft { background: #f6f7f9; }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 56px;
+      border-bottom: 1px solid rgba(0,0,0,.08);
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .red header,
+    .black header {
+      border-bottom-color: rgba(255,255,255,.18);
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      width: auto;
+      min-width: 132px;
+      height: 34px;
+      padding: 0 14px;
+      border-radius: 7px;
+      background: var(--red);
+      color: var(--white);
+      font-size: 22px;
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: 0;
+    }
+
+    .brand::before { content: "auto.ru"; }
+
+    .red .brand, .black .brand {
+      background: var(--white);
+      color: var(--red);
+    }
+
+    .kicker {
+      text-transform: uppercase;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .red .kicker,
+    .black .kicker { color: rgba(255,255,255,.72); }
+
+    .content {
+      padding: 48px 56px 54px;
+      min-height: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    h1, h2, h3, p { margin: 0; }
+
+    h1 {
+      max-width: 900px;
+      font-size: 72px;
+      line-height: .94;
+      font-weight: 900;
+    }
+
+    h2 {
+      font-size: 50px;
+      line-height: 1;
+      font-weight: 900;
+      max-width: 820px;
+    }
+
+    h3 {
+      font-size: 25px;
+      line-height: 1.08;
+      font-weight: 900;
+    }
+
+    .lead {
+      max-width: 720px;
+      margin-top: 26px;
+      font-size: 24px;
+      line-height: 1.25;
+      font-weight: 600;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      align-items: stretch;
+      height: 100%;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-top: 32px;
+    }
+
+    .metric {
+      background: var(--soft-blue);
+      border-radius: 8px;
+      padding: 24px;
+      min-height: 148px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .metric.dark {
+      background: var(--black);
+      color: var(--white);
+    }
+
+    .metric.red {
+      background: var(--red);
+      color: var(--white);
+    }
+
+    .metric .num {
+      font-size: 56px;
+      line-height: .9;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .metric .label {
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.24;
+      font-weight: 700;
+    }
+
+    .metric.dark .label,
+    .metric.red .label { color: rgba(255,255,255,.72); }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      min-height: 34px;
+      padding: 7px 16px;
+      border: 2px solid currentColor;
+      border-radius: 999px;
+      color: var(--red);
+      background: var(--white);
+      font-weight: 900;
+      font-size: 14px;
+      line-height: 1;
+    }
+
+    .red .pill { color: var(--red); }
+
+    .bars {
+      display: grid;
+      gap: 18px;
+      margin-top: 34px;
+    }
+
+    .bar-row {
+      display: grid;
+      grid-template-columns: 94px 1fr 124px;
+      gap: 16px;
+      align-items: center;
+      font-weight: 800;
+      font-size: 16px;
+    }
+
+    .track {
+      height: 34px;
+      background: #eeeeee;
+      border-radius: 7px;
+      overflow: hidden;
+    }
+
+    .fill {
+      height: 100%;
+      background: var(--red);
+      border-radius: 7px;
+    }
+
+    .fill.black { background: var(--black); }
+    .fill.lime { background: var(--lime); }
+
+    .table {
+      margin-top: 28px;
+      border-top: 1px solid var(--line);
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .tr {
+      display: grid;
+      grid-template-columns: 1.1fr repeat(3, 1fr);
+      gap: 16px;
+      padding: 15px 0;
+      border-bottom: 1px solid var(--line);
+      align-items: center;
+    }
+
+    .tr.head {
+      color: var(--muted);
+      font-size: 13px;
+      text-transform: uppercase;
+      font-weight: 900;
+    }
+
+    .chart-card {
+      background: var(--white);
+      border-radius: 8px;
+      padding: 26px;
+      border: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 430px;
+    }
+
+    .line-chart {
+      width: 100%;
+      height: 250px;
+      display: block;
+      margin-top: 18px;
+    }
+
+    .axis-text {
+      font-size: 14px;
+      fill: #6f6f6f;
+      font-weight: 700;
+    }
+
+    .callout {
+      background: var(--black);
+      color: var(--white);
+      border-radius: 8px;
+      padding: 26px;
+      align-self: end;
+    }
+
+    .callout .num {
+      font-size: 64px;
+      line-height: .9;
+      font-weight: 900;
+      color: var(--lime);
+    }
+
+    .bullets {
+      display: grid;
+      gap: 16px;
+      margin-top: 30px;
+      max-width: 720px;
+    }
+
+    .bullet {
+      display: grid;
+      grid-template-columns: 14px 1fr;
+      gap: 14px;
+      align-items: start;
+      font-size: 22px;
+      line-height: 1.2;
+      font-weight: 700;
+    }
+
+    .dot {
+      width: 14px;
+      height: 14px;
+      margin-top: 6px;
+      border-radius: 999px;
+      background: var(--red);
+    }
+
+    .red .dot { background: var(--white); }
+
+    .side-panel {
+      background: var(--black);
+      color: var(--white);
+      padding: 34px;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .side-panel.red-panel { background: var(--red); }
+
+    .huge-word {
+      position: absolute;
+      right: -36px;
+      bottom: -24px;
+      color: rgba(255,255,255,.12);
+      font-size: 156px;
+      line-height: .8;
+      font-weight: 900;
+      letter-spacing: 0;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    .cover-slide {
+      --cover-text-offset: 470px;
+      --cover-author-left: -98px;
+      --cover-author-width: 430px;
+      --cover-author-caption-left: 284px;
+      --cover-author-opacity: .82;
+    }
+
+    .cover-slide h1,
+    .cover-slide .lead {
+      max-width: 640px;
+    }
+
+    .cover-slide .pill,
+    .cover-slide h1,
+    .cover-slide .lead {
+      position: relative;
+      z-index: 3;
+      margin-left: var(--cover-text-offset);
+    }
+
+    /* AUTHOR HERO LOCK: align the raised hand itself to the left slide edge, not the PNG edge. */
+    .cover-author {
+      position: absolute;
+      left: var(--cover-author-left);
+      right: auto;
+      bottom: 0;
+      z-index: 2;
+      width: var(--cover-author-width);
+      height: auto;
+      max-width: none;
+      max-height: calc(100% - 76px);
+      object-fit: contain;
+      object-position: left bottom;
+      opacity: var(--cover-author-opacity);
+      filter: drop-shadow(0 26px 30px rgba(0,0,0,.2));
+      pointer-events: none;
+    }
+
+    .cover-author-caption {
+      position: absolute;
+      left: var(--cover-author-caption-left);
+      bottom: 86px;
+      z-index: 4;
+      display: grid;
+      gap: 3px;
+      min-width: 260px;
+      padding: 12px 16px;
+      border: 1px solid rgba(255,255,255,.32);
+      border-radius: 8px;
+      background: rgba(8,8,8,.76);
+      box-shadow: 0 18px 36px rgba(0,0,0,.2);
+      color: var(--white);
+      font-weight: 900;
+    }
+
+    .cover-author-caption span {
+      color: rgba(255,255,255,.66);
+      font-size: 12px;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    .cover-author-caption strong {
+      font-size: 22px;
+      line-height: 1.04;
+    }
+
+    @media (max-width: 1180px) {
+      .cover-slide {
+        --cover-text-offset: 360px;
+        --cover-author-left: -80px;
+        --cover-author-width: 350px;
+        --cover-author-caption-left: 220px;
+        --cover-author-opacity: .78;
+      }
+
+      .cover-slide h1 {
+        font-size: 62px;
+      }
+
+      .cover-slide .lead {
+        font-size: 22px;
+      }
+
+      .cover-slide h1,
+      .cover-slide .lead {
+        max-width: 560px;
+      }
+
+      .cover-author-caption {
+        bottom: 74px;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .cover-slide h1,
+      .cover-slide .lead {
+        max-width: 100%;
+      }
+
+      .cover-slide .pill,
+      .cover-slide h1,
+      .cover-slide .lead {
+        margin-left: 0;
+      }
+
+      .cover-slide .content {
+        position: relative;
+      }
+
+      .cover-slide {
+        --cover-author-left: -62px;
+        --cover-author-width: min(270px, 72vw);
+        --cover-author-caption-left: 24px;
+        --cover-author-opacity: .42;
+      }
+
+      .cover-author {
+        display: block;
+        left: var(--cover-author-left);
+        right: auto;
+        bottom: 0;
+        width: var(--cover-author-width);
+        height: auto;
+        max-width: none;
+        max-height: 58%;
+        object-position: left bottom;
+        z-index: 1;
+      }
+
+      .cover-author-caption {
+        display: grid;
+        left: var(--cover-author-caption-left);
+        right: 24px;
+        bottom: 28px;
+        min-width: 0;
+        width: fit-content;
+        max-width: calc(100% - 48px);
+      }
+    }
+
+    .mini-note {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.25;
+      font-weight: 700;
+    }
+
+    .black .mini-note,
+    .red .mini-note { color: rgba(255,255,255,.62); }
+
+    .formula {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto 1fr auto 1.2fr;
+      gap: 12px;
+      align-items: center;
+      margin-top: 40px;
+    }
+
+    .formula .box {
+      background: var(--soft-blue);
+      border-radius: 8px;
+      padding: 24px 18px;
+      min-height: 112px;
+      display: grid;
+      align-content: center;
+      text-align: center;
+      font-weight: 900;
+    }
+
+    .formula .op {
+      font-size: 28px;
+      font-weight: 900;
+      color: var(--muted);
+    }
+
+    .box .big {
+      font-size: 34px;
+      line-height: 1;
+    }
+
+    .box .small {
+      margin-top: 8px;
+      font-size: 13px;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .stack {
+      display: grid;
+      gap: 18px;
+    }
+
+    .roadmap {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-top: 34px;
+    }
+
+    .step {
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-top: 8px solid var(--red);
+      border-radius: 8px;
+      padding: 20px;
+      min-height: 210px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .step b {
+      display: block;
+      font-size: 21px;
+      line-height: 1.08;
+    }
+
+    .step span {
+      color: var(--muted);
+      font-weight: 700;
+      line-height: 1.22;
+    }
+
+    .caption-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+    }
+
+    .tag {
+      background: var(--black);
+      color: var(--white);
+      border-radius: 999px;
+      padding: 10px 15px;
+      font-size: 13px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .tag.redtag { background: var(--red); }
+    .tag.limetag { background: var(--lime); color: var(--black); }
+
+    .avg-flow {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto 1fr;
+      gap: 16px;
+      align-items: center;
+      margin-top: 34px;
+    }
+
+    .avg-card {
+      min-height: 220px;
+      border-radius: 8px;
+      padding: 24px;
+      border: 1px solid var(--line);
+      background: var(--white);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .avg-card.blue { border-top: 10px solid #1f6feb; }
+    .avg-card.green { border-top: 10px solid #22a35a; background: #eefaf3; }
+    .avg-card.redline { border-top: 10px solid var(--red); }
+
+    .avg-card .period {
+      color: var(--muted);
+      font-size: 15px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .avg-card .value {
+      margin-top: 18px;
+      font-size: 60px;
+      line-height: .9;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .avg-card .desc {
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.26;
+      font-weight: 700;
+    }
+
+    .avg-slide .content {
+      padding-top: 38px;
+      padding-bottom: 34px;
+    }
+
+    .avg-slide h2 {
+      max-width: 960px;
+      font-size: 46px;
+    }
+
+    .avg-slide .lead {
+      max-width: 1040px;
+      margin-top: 18px;
+      font-size: 21px;
+      line-height: 1.22;
+    }
+
+    .avg-slide .avg-flow {
+      margin-top: 24px;
+      gap: 14px;
+    }
+
+    .avg-slide .avg-card {
+      min-height: 190px;
+      padding: 22px;
+    }
+
+    .avg-slide .avg-card .value {
+      margin-top: 14px;
+      font-size: 54px;
+    }
+
+    .avg-delta {
+      min-width: 126px;
+      display: grid;
+      place-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .avg-delta strong {
+      display: block;
+      color: var(--black);
+      font-size: 38px;
+      line-height: .95;
+    }
+
+    .avg-delta.down strong { color: var(--red); }
+
+    .avg-footnote {
+      margin-top: 18px;
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid var(--line);
+      border-left: 8px solid var(--red);
+      border-radius: 8px;
+      background: var(--white);
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.28;
+      font-weight: 700;
+    }
+
+    @media print {
+      body { background: var(--white); padding: 0; gap: 0; }
+      .slide {
+        width: 100vw;
+        height: 100vh;
+        box-shadow: none;
+        page-break-after: always;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <section class="slide red cover-slide">
+    <header>
+      <div class="brand" aria-label="Auto.ru"></div>
+      <div>1 квартал 2026 года</div>
+    </header>
+    <main class="content">
+      <span class="pill">Кейс группы компаний Авангард</span>
+      <h1 style="margin-top:28px;">Кейс группы компаний Авангард</h1>
+      <p class="lead">Бренды Haval и Tank. 1 квартал 2026 года.</p>
+      <img class="cover-author" src="autoru-profi-assets/author-denis-nepomnyashchikh-cutout-v2.png" alt="Денис Непомнящих" loading="eager" decoding="sync" fetchpriority="high" onerror="this.onerror=null;this.src='autoru-profi-assets/author-denis-nepomnyashchikh-cutout.png';">
+      <div class="cover-author-caption">
+        <span>Автор кейса</span>
+        <strong>Денис Непомнящих</strong>
+      </div>
+      <div class="huge-word">Haval / Tank</div>
+    </main>
+  </section>
+
+  <section class="slide soft">
+    <header>
+      <div class="brand" aria-label="Auto.ru"></div>
+      <div class="kicker">Выручка Auto.ru по ГК</div>
+    </header>
+    <main class="content">
+      <div>
+        <h2>Пик выручки пришелся на период активного агентского ведения</h2>
+        <p class="lead">Январь-март: средняя выручка 697 тыс. ₽ в месяц. Апрель-май после активного периода: 530 тыс. ₽ в месяц.</p>
+        <div class="grid-3">
+          <div class="metric red"><div class="num">2,09 млн ₽</div><div class="label">выручка Auto.ru за январь-март</div></div>
+          <div class="metric"><div class="num">+31%</div><div class="label">к среднему уровню апреля-мая</div></div>
+          <div class="metric dark"><div class="num">771 тыс. ₽</div><div class="label">мартовский максимум периода</div></div>
+        </div>
+      </div>
+    </main>
+  </section>
+
+  <section class="slide soft">
+    <header>
+      <div class="brand" aria-label="Auto.ru"></div>
+      <div class="kicker">График выручки</div>
+    </header>
+    <main class="content">
+      <div class="chart-card">
+        <h2>Авангард Tank и Haval: выручка Auto.ru по месяцам</h2>
+        <svg class="line-chart" viewBox="0 0 560 250" role="img" aria-label="Выручка по месяцам">
+          <line x1="42" y1="202" x2="536" y2="202" stroke="#d7d7d7" stroke-width="2"/>
+          <polyline points="184,91 255,81 326,113" fill="none" stroke="#b8b8b8" stroke-width="3" stroke-dasharray="7 7" stroke-linecap="round" stroke-linejoin="round"/>
+          <polyline points="397,53 468,134" fill="none" stroke="#b8b8b8" stroke-width="3" stroke-dasharray="7 7" stroke-linecap="round" stroke-linejoin="round"/>
+          <polyline points="42,139 113,160 184,91" fill="none" stroke="#1f6feb" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+          <polyline points="255,81 326,113 397,53" fill="none" stroke="#22a35a" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+          <polyline points="468,134 536,163" fill="none" stroke="#e60000" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+          <g fill="#080808">
+            <circle cx="42" cy="139" r="8"/><circle cx="113" cy="160" r="8"/><circle cx="184" cy="91" r="8"/><circle cx="255" cy="81" r="8"/><circle cx="326" cy="113" r="8"/><circle cx="397" cy="53" r="8"/><circle cx="468" cy="134" r="8"/><circle cx="536" cy="163" r="8"/>
+          </g>
+          <g class="axis-text">
+            <text x="22" y="232">Окт</text><text x="94" y="232">Ноя</text><text x="165" y="232">Дек</text><text x="236" y="232">Янв</text><text x="307" y="232">Фев</text><text x="378" y="232">Мар</text><text x="449" y="232">Апр</text><text x="518" y="232">Май</text>
+            <text x="18" y="126">555</text><text x="89" y="180">500</text><text x="160" y="78">675</text><text x="231" y="68">700</text><text x="302" y="101">620</text><text x="373" y="40">771</text><text x="444" y="122">566</text><text x="508" y="151">494</text>
+          </g>
+          <g class="axis-text">
+            <rect x="42" y="9" width="16" height="7" rx="3.5" fill="#1f6feb"/><text x="64" y="17">4 кв. 2025</text>
+            <rect x="172" y="9" width="16" height="7" rx="3.5" fill="#22a35a"/><text x="194" y="17">1 кв. 2026</text>
+            <rect x="302" y="9" width="16" height="7" rx="3.5" fill="#e60000"/><text x="324" y="17">после 1 кв.</text>
+          </g>
+        </svg>
+        <p class="mini-note">Тыс. ₽, округлено. 4 кв. 2025 добавлен из файла «Выручка Регион - ГК_2026-06-09_17-21-01.xlsx», строка ГК «812 Авангард».</p>
+      </div>
+    </main>
+  </section>
+
+  <section class="slide avg-slide">
+    <header>
+      <div class="brand" aria-label="Auto.ru"></div>
+      <div class="kicker">Средний уровень</div>
+    </header>
+    <main class="content">
+      <h2>Результат работы Дениса в Q1</h2>
+      <p class="lead">Если смотреть не на отдельные месяцы, а на средний уровень периода, 1 квартал 2026 стал лучшей зоной: +21% к 4 кварталу 2025. После зелёной зоны средняя выручка упала на 24%.</p>
+      <div class="avg-flow">
+        <div class="avg-card blue">
+          <div>
+            <div class="period">4 кв. 2025</div>
+            <div class="value">577</div>
+          </div>
+          <div class="desc">тыс. ₽ в месяц в среднем: октябрь, ноябрь, декабрь</div>
+        </div>
+        <div class="avg-delta">
+          <strong>+21%</strong>
+          <span>+120 тыс. ₽ / мес</span>
+        </div>
+        <div class="avg-card green">
+          <div>
+            <div class="period">1 кв. 2026</div>
+            <div class="value">697</div>
+          </div>
+          <div class="desc">тыс. ₽ в месяц в зелёной зоне: январь, февраль, март</div>
+        </div>
+        <div class="avg-delta down">
+          <strong>−24%</strong>
+          <span>−167 тыс. ₽ / мес</span>
+        </div>
+        <div class="avg-card redline">
+          <div>
+            <div class="period">после 1 кв.</div>
+            <div class="value">530</div>
+          </div>
+          <div class="desc">тыс. ₽ в месяц после зелёной зоны: апрель, май</div>
+        </div>
+      </div>
+      <p class="avg-footnote">Вывод: эффект виден именно на среднем уровне периода, а не только на мартовском пике. Зелёная зона дала рост к предыдущему кварталу, после передачи управления выручка просела ниже базового среднего 4 кв. 2025.</p>
+    </main>
+  </section>
+
+  <section class="slide">
+    <header>
+      <div class="brand" aria-label="Auto.ru"></div>
+      <div class="kicker">До / после</div>
+    </header>
+    <main class="content">
+      <h2>Что было при моем управлении и что стало после передачи постинга «Четырем пикселям»</h2>
+      <p class="lead">Сравнение по деньгам: январь-март как период агентского управления против апреля-мая после передачи постинга внешнему агентству.</p>
+      <div class="grid-3">
+        <div class="metric red"><div class="num">697 тыс. ₽</div><div class="label">средняя выручка Auto.ru в месяц при моем управлении</div></div>
+        <div class="metric dark"><div class="num">530 тыс. ₽</div><div class="label">средняя выручка в месяц после передачи «Четырем пикселям»</div></div>
+        <div class="metric"><div class="num">−24%</div><div class="label">снижение среднемесячной выручки Auto.ru</div></div>
+      </div>
+      <div class="bars">
+        <div class="bar-row"><span>Янв-мар</span><div class="track"><div class="fill" style="width:100%"></div></div><span>2,09 млн ₽</span></div>
+        <div class="bar-row"><span>Апр-май</span><div class="track"><div class="fill black" style="width:51%"></div></div><span>1,06 млн ₽</span></div>
+      </div>
+    </main>
+  </section>
+
+  <section class="slide">
+    <header>
+      <div class="brand" aria-label="Auto.ru"></div>
+      <div class="kicker">Переток бюджета</div>
+    </header>
+    <main class="content">
+      <h2>Бюджет был управляемо смещен в пользу Auto.ru</h2>
+      <p class="lead">За январь-март по Haval и Tank на Auto.ru было потрачено 2,50 млн ₽ против 1,05 млн ₽ на Авито.</p>
+      <div class="bars">
+        <div class="bar-row"><span>Auto.ru</span><div class="track"><div class="fill" style="width:100%"></div></div><span>2,50 млн ₽</span></div>
+        <div class="bar-row"><span>Авито</span><div class="track"><div class="fill black" style="width:42%"></div></div><span>1,05 млн ₽</span></div>
+      </div>
+      <div class="table">
+        <div class="tr head"><span>Бренд</span><span>Auto.ru</span><span>Авито</span><span>Доля Auto.ru</span></div>
+        <div class="tr"><span>Haval</span><span>1,90 млн ₽</span><span>0,54 млн ₽</span><span>78%</span></div>
+        <div class="tr"><span>Tank</span><span>0,61 млн ₽</span><span>0,51 млн ₽</span><span>54%</span></div>
+      </div>
+    </main>
+  </section>
+
+  <section class="slide black">
+    <header>
+      <div class="brand" aria-label="Auto.ru"></div>
+      <div class="kicker">Целевые звонки</div>
+    </header>
+    <main class="content grid-2">
+      <div>
+        <h2>Auto.ru дал больше обращений при меньшей стоимости звонка</h2>
+        <div class="grid-3">
+          <div class="metric red"><div class="num">188</div><div class="label">звонков Auto.ru</div></div>
+          <div class="metric" style="background:#ffffff;color:#080808;"><div class="num">43</div><div class="label" style="color:#333333;">звонка Авито</div></div>
+          <div class="metric dark" style="border:1px solid rgba(255,255,255,.2)"><div class="num">1,8x</div><div class="label">Auto.ru эффективнее по CPL</div></div>
+        </div>
+        <div class="bars">
+          <div class="bar-row"><span>Auto.ru</span><div class="track"><div class="fill lime" style="width:55%"></div></div><span>13,3 тыс. ₽</span></div>
+          <div class="bar-row"><span>Авито</span><div class="track"><div class="fill" style="width:100%"></div></div><span>24,3 тыс. ₽</span></div>
+        </div>
+      </div>
+      <div class="callout">
+        <div class="num">4,4x</div>
+        <h3 style="margin-top:20px;">больше целевых звонков пришло с Auto.ru за январь-март по Haval и Tank</h3>
+        <p class="mini-note" style="margin-top:80px;">CPL рассчитан как расход классифайда / фактические звонки из рабочего агентского файла.</p>
+      </div>
+    </main>
+  </section>
+
+  <section class="slide soft">
+    <header>
+      <div class="brand" aria-label="Auto.ru"></div>
+      <div class="kicker">Сохраненная выручка</div>
+    </header>
+    <main class="content">
+      <h2>Агентское ведение сохранило клиента на постинге</h2>
+      <p class="lead">Кроме рекламной выручки, работа с Tank и Haval удержала базовую выручку от постинга по двум брендам в течение трех месяцев.</p>
+      <div class="formula">
+        <div class="box"><div class="big">13 900 ₽</div><div class="small">постинг</div></div>
+        <div class="op">×</div>
+        <div class="box"><div class="big">2</div><div class="small">бренда</div></div>
+        <div class="op">×</div>
+        <div class="box"><div class="big">3</div><div class="small">месяца</div></div>
+        <div class="op">=</div>
+        <div class="box" style="background:var(--black);color:var(--white)"><div class="big">83 400 ₽</div><div class="small" style="color:rgba(255,255,255,.68)">сохранено</div></div>
+      </div>
+      <div class="caption-row">
+        <span class="tag redtag">постинг удержан</span>
+        <span class="tag">контакт с клиентом сохранен</span>
+        <span class="tag limetag">конкурентная емкость видна</span>
+      </div>
+    </main>
+  </section>
+
+</body>
+</html>

@@ -1,0 +1,2426 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Авто.ру Профи</title>
+  <style>
+    :root {
+      --paper: #DBD0C3;
+      --sheet: #ffffff;
+      --soft: #F5F4F4;
+      --work: #E4E9EF;
+      --panel: #F1EFF0;
+      --ink: #1C1A1C;
+      --muted: #919497;
+      --line: #D9DEE4;
+      --line-dark: #1C1A1C;
+      --red: #E60000;
+      --red-dark: #BF0E20;
+      --lime: #CCFF00;
+      --admin: #272625;
+      --shadow: 0 8px 24px rgba(0, 0, 0, .10);
+      --radius: 10px;
+      color-scheme: light;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: Inter, Arial, Helvetica, sans-serif;
+      letter-spacing: 0;
+      background:
+        linear-gradient(180deg, rgba(245, 244, 244, .72), rgba(219, 208, 195, .96)),
+        var(--paper);
+      min-height: 100vh;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background:
+        url("autoru-profi-assets/auto-ru-car-bg.png") right -7vw top 42px / min(760px, 58vw) auto no-repeat,
+        url("autoru-profi-assets/car-audi.png") left -150px bottom 9vh / min(560px, 42vw) auto no-repeat,
+        url("autoru-profi-assets/car-mercedes.png") right 18vw bottom -90px / min(440px, 34vw) auto no-repeat;
+      opacity: .14;
+      filter: saturate(.9);
+      pointer-events: none;
+    }
+
+    body.modal-open { overflow: hidden; }
+
+    a { color: inherit; }
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+
+    .layout {
+      width: min(100% - 48px, 1720px);
+      margin: 0 auto;
+      padding: 28px 0 64px;
+    }
+
+    .menu-hotspot {
+      position: fixed;
+      left: 0;
+      top: 0;
+      z-index: 49;
+      width: 30px;
+      height: 100vh;
+      background: transparent;
+    }
+
+    .side-toolbar {
+      position: fixed;
+      left: 0;
+      top: 28px;
+      z-index: 50;
+      width: 248px;
+      padding: 14px;
+      border: 0;
+      border-radius: 18px;
+      background: var(--admin);
+      box-shadow: 0 18px 44px rgba(0, 0, 0, .18);
+      transform: translateX(calc(-100% - 12px));
+      transition: transform .42s ease, box-shadow .42s ease;
+      will-change: transform;
+    }
+
+    .side-toolbar::after {
+      content: none;
+    }
+
+    .side-toolbar.is-open,
+    .side-toolbar:focus-within {
+      transform: translateX(16px);
+      box-shadow: 0 24px 58px rgba(0, 0, 0, .24);
+    }
+
+    .side-toolbar.is-open::after,
+    .side-toolbar:focus-within::after {
+      opacity: 0;
+    }
+
+    .toolbar-logo {
+      display: flex;
+      align-items: center;
+      padding: 12px 12px 18px;
+      border-bottom: 1px solid rgba(255, 255, 255, .16);
+      text-decoration: none;
+    }
+
+    .logo-mark {
+      display: grid;
+      place-items: center;
+      min-width: 42px;
+      height: 34px;
+      padding: 0 8px;
+      border-radius: 8px;
+      background: var(--red);
+      color: #fff;
+      font-weight: 950;
+      font-size: .78rem;
+      line-height: 1;
+      text-transform: lowercase;
+    }
+
+    .toolbar-logo .logo-mark {
+      min-width: 116px;
+      height: 68px;
+      padding: 0 18px;
+      border-radius: 14px;
+      font-size: 1.35rem;
+      letter-spacing: 0;
+    }
+
+    .toolbar-nav {
+      display: grid;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .toolbar-nav a {
+      display: grid;
+      min-height: 44px;
+      align-items: center;
+      padding: 10px 12px;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      color: rgba(255,255,255,.62);
+      font-size: .84rem;
+      font-weight: 850;
+      line-height: 1.12;
+      text-align: left;
+      text-decoration: none;
+    }
+
+    .toolbar-nav a:hover,
+    .toolbar-nav a.is-active {
+      border-color: var(--red);
+      background: var(--red);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+
+    main > .section {
+      display: none;
+      margin-top: 20px;
+      scroll-margin-top: 28px;
+    }
+
+    main > .section.is-view {
+      display: block;
+    }
+
+    .section:focus { outline: 0; }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      min-height: 680px;
+      border: 0;
+      border-radius: 16px;
+      background: var(--sheet);
+      box-shadow: var(--shadow);
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 46px;
+      height: 100%;
+      background: var(--red);
+    }
+
+    .hero-top {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: minmax(0, .92fr) minmax(360px, .42fr);
+      gap: 40px;
+      align-items: start;
+      padding: 48px 56px 24px;
+    }
+
+    .brand-row {
+      display: flex;
+      flex-wrap: wrap;
+      display: grid;
+      gap: 14px;
+      align-items: start;
+      margin-bottom: 18px;
+    }
+
+    .wordmark {
+      display: inline-flex;
+      width: fit-content;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 2px solid var(--red);
+      color: var(--red);
+      font-size: .88rem;
+      font-weight: 900;
+      line-height: 1;
+      text-transform: none;
+    }
+
+    .wordmark .logo-mark {
+      width: auto;
+      min-width: 58px;
+      height: 24px;
+      font-size: .76rem;
+    }
+
+    .brand-divider {
+      display: none;
+    }
+
+    h1, h2, h3, p { margin-top: 0; }
+    h1, h2 { font-family: Inter, Arial, Helvetica, sans-serif; letter-spacing: 0; }
+
+    h1 {
+      max-width: 760px;
+      margin: 0;
+      font-size: clamp(3.4rem, 7vw, 6.8rem);
+      font-weight: 900;
+      line-height: .92;
+    }
+
+    .hero-subtitle {
+      max-width: 760px;
+      margin: 0;
+      font-size: clamp(1.35rem, 2.4vw, 2.55rem);
+      font-weight: 850;
+      line-height: 1.06;
+    }
+
+    .hero-copy {
+      max-width: 720px;
+      color: var(--muted);
+      font-size: 1.12rem;
+      line-height: 1.38;
+    }
+
+    .hero-model {
+      max-width: 780px;
+      margin-top: 18px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--soft);
+    }
+
+    .model-label {
+      margin-bottom: 10px;
+      color: var(--red);
+      font-size: .78rem;
+      font-weight: 950;
+      text-transform: uppercase;
+    }
+
+    .model-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .model-item {
+      min-height: 94px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fff;
+    }
+
+    .model-item strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: .86rem;
+      line-height: 1.18;
+    }
+
+    .model-item span {
+      display: block;
+      color: var(--muted);
+      font-size: .76rem;
+      line-height: 1.28;
+    }
+
+    .hero-actions,
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-top: 18px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 40px;
+      padding: 10px 14px;
+      border: 1px solid var(--ink);
+      border-radius: 10px;
+      background: #fff;
+      color: var(--ink);
+      font-size: .86rem;
+      font-weight: 900;
+      text-decoration: none;
+      transition: transform .16s ease, box-shadow .16s ease, background .16s ease, color .16s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(0,0,0,.10);
+    }
+
+    .btn.primary {
+      border-color: var(--ink);
+      background: var(--ink);
+      color: #fff;
+    }
+
+    .btn.primary:hover { background: var(--red); border-color: var(--red); }
+
+    .hero-actions {
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .hero-actions .btn {
+      min-height: 58px;
+      padding: 16px 24px;
+      border-radius: 16px;
+      font-size: 1rem;
+      line-height: 1;
+    }
+
+    .hero-actions .hero-primary {
+      min-width: 268px;
+      gap: 12px;
+      border-color: var(--red);
+      background: var(--red);
+      color: #fff;
+      font-weight: 950;
+      box-shadow: 0 12px 28px rgba(230, 0, 0, .24);
+    }
+
+    .hero-actions .hero-primary:hover {
+      border-color: var(--red-dark);
+      background: var(--red-dark);
+      box-shadow: 0 16px 34px rgba(230, 0, 0, .30);
+      transform: translateY(-1px);
+    }
+
+    .hero-actions .hero-primary:active {
+      border-color: #9f0715;
+      background: #9f0715;
+      box-shadow: 0 6px 16px rgba(230, 0, 0, .20);
+      transform: translateY(0);
+    }
+
+    .hero-car-icon {
+      width: 30px;
+      height: 22px;
+      flex: 0 0 auto;
+      color: currentColor;
+    }
+
+    .hero-car-icon path,
+    .hero-car-icon circle {
+      stroke: currentColor;
+    }
+
+    .hero-actions .hero-secondary {
+      min-width: 210px;
+      border-color: var(--line-dark);
+      background: #fff;
+      color: var(--ink);
+      box-shadow: none;
+      font-weight: 950;
+    }
+
+    .hero-actions .hero-secondary:hover {
+      border-color: var(--ink);
+      background: var(--soft);
+      box-shadow: 0 10px 24px rgba(28, 26, 28, .10);
+      transform: translateY(-1px);
+    }
+
+    .hero-actions .hero-secondary:active {
+      background: var(--panel);
+      box-shadow: none;
+      transform: translateY(0);
+    }
+
+    .trust-card {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 16px;
+      align-items: center;
+      max-width: 440px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #fff;
+      box-shadow: var(--shadow);
+    }
+
+    .shield {
+      display: grid;
+      place-items: center;
+      width: 54px;
+      height: 62px;
+      border: 2px solid var(--ink);
+      border-radius: 14px;
+      font-size: 1.7rem;
+      font-weight: 950;
+    }
+
+    .trust-card strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 1.06rem;
+      line-height: 1.2;
+    }
+
+    .trust-card strong span { color: var(--red); }
+    .trust-card p { margin: 0; color: var(--muted); font-size: .82rem; }
+
+    .hero-car {
+      position: relative;
+      min-height: 250px;
+      margin-top: 18px;
+      border-radius: 18px;
+      background: url("autoru-profi-assets/auto-ru-car-bg.png") center / contain no-repeat;
+    }
+
+    .hero-car::before {
+      content: none;
+    }
+
+    .hero-car::after {
+      content: none;
+    }
+
+    .hero-points {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      padding: 0 56px 28px;
+    }
+
+    .point {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      padding: 16px;
+      border-radius: 14px;
+      background: var(--panel);
+      align-items: center;
+    }
+
+    .point-icon {
+      display: grid;
+      place-items: center;
+      width: 44px;
+      height: 44px;
+      border: 1px solid var(--ink);
+      border-radius: 50%;
+      background: #fff;
+      font-weight: 950;
+    }
+
+    .point strong { display: block; font-size: .98rem; line-height: 1.12; }
+    .point span { display: block; margin-top: 4px; color: var(--muted); font-size: .76rem; line-height: 1.2; }
+
+    .catalog-board {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 245px minmax(0, 1fr) 575px;
+      gap: 0;
+      min-height: 650px;
+      margin: 0 28px 28px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--work);
+      box-shadow: var(--shadow);
+    }
+
+    .catalog-topbar {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: 190px minmax(0, 1fr) auto;
+      gap: 14px;
+      align-items: center;
+      min-height: 66px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--line);
+      background: #fff;
+    }
+
+    .top-logo {
+      display: inline-flex;
+      gap: 10px;
+      align-items: center;
+      font-size: 1.25rem;
+      font-weight: 950;
+      text-transform: uppercase;
+    }
+
+    .top-logo .logo-mark {
+      width: 34px;
+      height: 30px;
+      border-radius: 8px;
+      font-size: 1.1rem;
+    }
+
+    .search-wrap {
+      position: relative;
+    }
+
+    .search-wrap input {
+      width: 100%;
+      min-height: 40px;
+      padding: 10px 44px 10px 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--soft);
+      color: var(--ink);
+      outline: 0;
+    }
+
+    .search-wrap span {
+      position: absolute;
+      right: 13px;
+      top: 50%;
+      font-weight: 950;
+      transform: translateY(-50%);
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      color: var(--muted);
+      font-size: .78rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .top-action {
+      display: inline-flex;
+      align-items: center;
+      min-height: 34px;
+      padding: 7px 10px;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      background: #fff;
+    }
+
+    .filters {
+      padding: 16px;
+      border-right: 1px solid var(--line);
+      background: var(--soft);
+    }
+
+    .filter-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      font-weight: 950;
+    }
+
+    .reset { color: var(--red); font-size: .72rem; font-weight: 900; }
+
+    .filter {
+      margin-bottom: 9px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .filter-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: .78rem;
+      font-weight: 900;
+    }
+
+    .filter-value {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: .76rem;
+    }
+
+    .filter-pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .filter-pair input {
+      width: 100%;
+      min-height: 33px;
+      padding: 7px 8px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--muted);
+      font-size: .74rem;
+    }
+
+    .filter-chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      margin: 7px 4px 0 0;
+      padding: 6px 8px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+      color: var(--muted);
+      font-size: .72rem;
+      font-weight: 850;
+      transition: .16s ease;
+    }
+
+    .filter-chip:hover,
+    .filter-chip.is-active {
+      border-color: var(--red);
+      background: var(--red);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+
+    .catalog-list {
+      display: grid;
+      align-content: start;
+      gap: 14px;
+      padding: 16px;
+      background: var(--paper);
+    }
+
+    .catalog-list-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .catalog-list-head strong { font-size: 1rem; }
+
+    .list-tools {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      color: var(--muted);
+      font-size: .76rem;
+      font-weight: 850;
+    }
+
+    .tool-pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 32px;
+      padding: 7px 10px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+    }
+
+    .vehicle-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .vehicle-card {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+    }
+
+    .vehicle-card:hover {
+      border-color: #bfc8c3;
+      box-shadow: var(--shadow);
+      transform: translateY(-2px);
+    }
+
+    .car-photo {
+      position: relative;
+      height: 152px;
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, rgba(28,26,28,0) 40%, rgba(28,26,28,.34) 100%),
+        var(--photo, url("autoru-profi-assets/photo-bmw-5.webp")) center / cover no-repeat;
+    }
+
+    .car-photo::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(0,0,0,.18));
+    }
+
+    .car-photo::after {
+      content: none;
+    }
+
+    .vehicle-card:nth-child(1) .car-photo { --photo: url("autoru-profi-assets/photo-bmw-5.webp"); }
+    .vehicle-card:nth-child(2) .car-photo { --photo: url("autoru-profi-assets/photo-rav4.jpg"); }
+    .vehicle-card:nth-child(3) .car-photo { --photo: url("autoru-profi-assets/photo-kia-optima.webp"); }
+    .vehicle-card:nth-child(4) .car-photo { --photo: url("autoru-profi-assets/photo-audi-q5.webp"); }
+    .vehicle-card:nth-child(5) .car-photo { --photo: url("autoru-profi-assets/photo-mercedes-e.jpg"); }
+    .vehicle-card:nth-child(6) .car-photo { --photo: url("autoru-profi-assets/photo-tiguan.webp"); }
+
+    .card-body {
+      display: grid;
+      gap: 7px;
+      padding: 11px;
+    }
+
+    .badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 22px;
+      padding: 4px 7px;
+      border: 1px solid currentColor;
+      border-radius: 999px;
+      background: #fff;
+      color: var(--red);
+      font-size: .68rem;
+      font-weight: 950;
+      line-height: 1;
+    }
+
+    .badge.green { color: var(--ink); background: var(--lime); border-color: var(--lime); }
+    .badge.amber { color: var(--ink); }
+    .badge.blue { color: var(--muted); }
+
+    .vehicle-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: start;
+    }
+
+    .vehicle-title h3 {
+      margin: 0;
+      font-size: .92rem;
+      line-height: 1.18;
+    }
+
+    .vehicle-title span,
+    .meta,
+    .desc {
+      color: var(--muted);
+      font-size: .72rem;
+      line-height: 1.3;
+    }
+
+    .price {
+      margin-top: 2px;
+      font-size: 1.05rem;
+      font-weight: 950;
+    }
+
+    .desc {
+      min-height: 34px;
+    }
+
+    .card-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+    }
+
+    .small-btn {
+      min-height: 33px;
+      padding: 7px 8px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--ink);
+      font-size: .72rem;
+      font-weight: 900;
+      transition: .16s ease;
+    }
+
+    .small-btn:hover {
+      transform: translateY(-1px);
+      border-color: var(--ink);
+    }
+
+    .small-btn.red {
+      border-color: var(--red);
+      background: var(--red);
+      color: #fff;
+    }
+
+    .catalog-note {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      min-height: 48px;
+      padding: 12px 16px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      color: var(--muted);
+      font-size: .82rem;
+      font-weight: 850;
+    }
+
+    .lock {
+      display: grid;
+      place-items: center;
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      background: var(--paper);
+      color: var(--ink);
+      font-size: .8rem;
+    }
+
+    .lot-preview {
+      display: grid;
+      align-content: start;
+      gap: 14px;
+      padding: 14px;
+      border-left: 1px solid var(--line);
+      background: var(--soft);
+    }
+
+    .preview-card,
+    .contact-panel,
+    .name-panel,
+    .info-band,
+    .content-card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      box-shadow: none;
+    }
+
+    .preview-card {
+      padding: 14px;
+    }
+
+    .preview-card h2,
+    .contact-panel h2,
+    .content-card h2 {
+      margin: 0 0 12px;
+      font-size: 1rem;
+      font-family: Inter, Arial, Helvetica, sans-serif;
+    }
+
+    .lot-card-layout {
+      display: grid;
+      grid-template-columns: minmax(0, .78fr) minmax(0, 1fr);
+      gap: 14px;
+    }
+
+    .big-photo {
+      min-height: 218px;
+      border-radius: 8px;
+      background:
+        linear-gradient(180deg, rgba(28,26,28,0) 42%, rgba(28,26,28,.28) 100%),
+        url("autoru-profi-assets/photo-bmw-5.webp") center / cover no-repeat;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .big-photo::before {
+      content: none;
+    }
+
+    .thumbs {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .thumb {
+      height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: url("autoru-profi-assets/photo-bmw-5.webp") center / cover no-repeat;
+    }
+
+    .lot-details {
+      display: grid;
+      gap: 10px;
+      align-content: start;
+    }
+
+    .lot-details h3 {
+      margin: 0;
+      font-size: 1.28rem;
+      line-height: 1.05;
+    }
+
+    .lot-price {
+      font-size: 1.65rem;
+      font-weight: 950;
+    }
+
+    .lot-meta {
+      color: var(--muted);
+      font-size: .78rem;
+    }
+
+    .damage-map {
+      min-height: 110px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background:
+        radial-gradient(circle at 50% 22%, rgba(230,0,0,.16) 0 15%, transparent 16%),
+        linear-gradient(90deg, transparent 48%, #D9DEE4 48% 52%, transparent 52%),
+        linear-gradient(#fff, #F5F4F4);
+    }
+
+    .mini-tabs {
+      display: grid;
+      grid-template-columns: 150px 1fr;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .mini-nav {
+      display: grid;
+      align-content: start;
+      gap: 6px;
+    }
+
+    .mini-tab {
+      min-height: 34px;
+      padding: 8px 10px;
+      border: 1px solid transparent;
+      border-radius: 7px;
+      background: #fff;
+      color: var(--muted);
+      font-size: .76rem;
+      font-weight: 900;
+      text-align: left;
+    }
+
+    .mini-tab:hover,
+    .mini-tab.is-active {
+      border-color: var(--line);
+      background: var(--work);
+      color: var(--ink);
+    }
+
+    .mini-panel {
+      min-height: 128px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fff;
+    }
+
+    .mini-panel[hidden] { display: none; }
+
+    .clean-list {
+      display: grid;
+      gap: 7px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      color: var(--muted);
+      font-size: .78rem;
+      line-height: 1.35;
+    }
+
+    .clean-list li {
+      display: grid;
+      grid-template-columns: 16px 1fr;
+      gap: 8px;
+    }
+
+    .clean-list li::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      margin-top: 6px;
+      border-radius: 50%;
+      background: var(--red);
+    }
+
+    .contact-panel {
+      padding: 14px;
+    }
+
+    .pricing-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 9px;
+    }
+
+    .plan {
+      position: relative;
+      display: grid;
+      gap: 8px;
+      min-height: 130px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      transition: .16s ease;
+    }
+
+    .plan:hover,
+    .plan.is-selected {
+      border-color: var(--red);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+
+    .plan.is-selected::before {
+      content: "Популярный";
+      position: absolute;
+      left: 12px;
+      top: -10px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: var(--red);
+      color: #fff;
+      font-size: .64rem;
+      font-weight: 950;
+    }
+
+    .plan strong { font-size: .82rem; }
+    .plan small { color: var(--muted); font-size: .68rem; }
+    .plan-price { font-size: 1rem; font-weight: 950; }
+
+    .name-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      padding: 12px;
+    }
+
+    .name-tile {
+      display: grid;
+      place-items: center;
+      min-height: 76px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      font-size: 1.4rem;
+      font-weight: 950;
+    }
+
+    .name-tile.is-main { border-color: var(--red); color: var(--red); }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: end;
+      margin-bottom: 12px;
+    }
+
+    .section-title h2 {
+      margin: 0;
+      font-size: clamp(2.4rem, 5vw, 4.6rem);
+      font-weight: 900;
+      line-height: .96;
+    }
+
+    .section-title p {
+      max-width: 680px;
+      margin: 8px 0 0;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 7px 10px;
+      border: 1px solid var(--line-dark);
+      border-radius: 999px;
+      background: #fff;
+      font-size: .74rem;
+      font-weight: 950;
+      white-space: nowrap;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .span-4 { grid-column: span 4; }
+    .span-5 { grid-column: span 5; }
+    .span-6 { grid-column: span 6; }
+    .span-7 { grid-column: span 7; }
+    .span-12 { grid-column: span 12; }
+
+    .content-card {
+      padding: 22px;
+      border-left: 6px solid transparent;
+    }
+
+    .content-card.red {
+      border-color: var(--red-dark);
+      background: var(--red);
+      color: #fff;
+    }
+
+    .content-card.red .clean-list,
+    .content-card.red p { color: rgba(255,255,255,.82); }
+
+    .content-card.red .clean-list li::before { background: #fff; }
+
+    .full-lot {
+      display: grid;
+      grid-template-columns: minmax(340px, .9fr) minmax(0, 1fr);
+      gap: 14px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #fff;
+      box-shadow: var(--shadow);
+    }
+
+    .full-photo {
+      min-height: 470px;
+      border-radius: 12px;
+      background:
+        linear-gradient(180deg, rgba(28,26,28,0) 42%, rgba(28,26,28,.30) 100%),
+        url("autoru-profi-assets/photo-bmw-5.webp") center / cover no-repeat;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .full-photo::before {
+      content: none;
+    }
+
+    .full-photo::after {
+      content: none;
+    }
+
+    .full-thumbs {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .full-thumbs .thumb {
+      height: 64px;
+    }
+
+    .full-info {
+      display: grid;
+      align-content: start;
+      gap: 14px;
+    }
+
+    .kv-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .kv {
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--soft);
+    }
+
+    .kv strong { display: block; font-size: .92rem; }
+    .kv span { display: block; margin-top: 4px; color: var(--muted); font-size: .72rem; }
+
+    .info-columns {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .compare {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .metric {
+      min-height: 104px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      box-shadow: none;
+    }
+
+    .metric strong {
+      display: block;
+      color: var(--red);
+      font-family: Inter, Arial, Helvetica, sans-serif;
+      font-size: 2rem;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .metric span {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: .84rem;
+      line-height: 1.3;
+    }
+
+    .economy-shell {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 14px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--soft);
+      box-shadow: var(--shadow);
+    }
+
+    .economy-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .economy-card {
+      min-height: 176px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+    }
+
+    .economy-card h3 {
+      margin: 0;
+      color: var(--muted);
+      font-size: .84rem;
+      font-weight: 950;
+      line-height: 1.16;
+    }
+
+    .economy-value {
+      display: block;
+      margin-top: 22px;
+      color: var(--red);
+      font-size: clamp(2.1rem, 4vw, 3.35rem);
+      font-weight: 950;
+      line-height: .9;
+    }
+
+    .economy-card p {
+      margin: 0;
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: .86rem;
+      line-height: 1.28;
+    }
+
+    .economy-model {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(340px, .48fr);
+      gap: 14px;
+    }
+
+    .formula-panel,
+    .revenue-panel,
+    .market-note {
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+    }
+
+    .formula-panel {
+      display: grid;
+      gap: 12px;
+    }
+
+    .formula-panel h3,
+    .revenue-panel h3,
+    .market-note h3 {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 950;
+      line-height: 1.16;
+    }
+
+    .formula-line {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      min-height: 54px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      background: var(--soft);
+      font-size: clamp(1.1rem, 2vw, 1.7rem);
+      font-weight: 950;
+      line-height: 1.1;
+    }
+
+    .formula-line strong {
+      color: var(--red);
+    }
+
+    .formula-line.secondary {
+      font-size: clamp(1rem, 1.55vw, 1.25rem);
+    }
+
+    .revenue-panel {
+      display: grid;
+      gap: 16px;
+      border-color: var(--red);
+      background:
+        linear-gradient(135deg, rgba(230, 0, 0, .10), rgba(255,255,255,0) 44%),
+        #fff;
+    }
+
+    .revenue-row {
+      display: grid;
+      gap: 6px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+    }
+
+    .revenue-row:first-of-type {
+      padding-top: 0;
+      border-top: 0;
+    }
+
+    .revenue-row span {
+      color: var(--muted);
+      font-size: .84rem;
+      font-weight: 900;
+    }
+
+    .revenue-row strong {
+      color: var(--red);
+      font-size: clamp(1.9rem, 3.4vw, 3rem);
+      font-weight: 950;
+      line-height: .95;
+    }
+
+    .revenue-panel p {
+      margin: 0;
+      color: var(--muted);
+      font-size: .82rem;
+      line-height: 1.35;
+    }
+
+    .market-note {
+      border-style: dashed;
+      background: rgba(255, 255, 255, .72);
+    }
+
+    .market-note h3 {
+      color: var(--red);
+    }
+
+    .market-note p {
+      max-width: 980px;
+      margin: 8px 0 0;
+      color: var(--muted);
+      line-height: 1.42;
+    }
+
+    .economy-steps {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .economy-step {
+      min-height: 86px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fff;
+    }
+
+    .economy-step strong {
+      display: block;
+      font-size: .86rem;
+      line-height: 1.18;
+    }
+
+    .economy-step span {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: .78rem;
+      line-height: 1.28;
+    }
+
+    .launch-roadmap {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--soft);
+      box-shadow: var(--shadow);
+    }
+
+    .launch-roadmap::before {
+      content: "";
+      position: absolute;
+      left: 56px;
+      right: 56px;
+      top: 71px;
+      height: 2px;
+      background: var(--red);
+      opacity: .28;
+    }
+
+    .launch-step {
+      position: relative;
+      z-index: 1;
+      min-height: 300px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+    }
+
+    .launch-step::after {
+      content: "→";
+      position: absolute;
+      top: 39px;
+      right: -22px;
+      display: grid;
+      place-items: center;
+      width: 30px;
+      height: 30px;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      background: #fff;
+      color: var(--red);
+      font-weight: 950;
+      line-height: 1;
+    }
+
+    .launch-step:last-child::after {
+      content: none;
+    }
+
+    .launch-num {
+      display: grid;
+      place-items: center;
+      width: 56px;
+      height: 56px;
+      margin-bottom: 22px;
+      border: 2px solid var(--red);
+      border-radius: 50%;
+      background: #fff;
+      color: var(--red);
+      font-size: 1.25rem;
+      font-weight: 950;
+    }
+
+    .launch-step h3 {
+      margin: 0;
+      font-size: clamp(1.16rem, 1.5vw, 1.45rem);
+      line-height: 1.05;
+    }
+
+    .launch-term {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      margin-top: 12px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: var(--soft);
+      color: var(--ink);
+      font-size: .78rem;
+      font-weight: 950;
+      line-height: 1.15;
+    }
+
+    .launch-step p {
+      margin: 16px 0 0;
+      color: var(--muted);
+      font-size: .9rem;
+      line-height: 1.38;
+    }
+
+    .launch-milestone {
+      display: grid;
+      grid-template-columns: minmax(240px, .34fr) minmax(0, 1fr);
+      gap: 18px;
+      align-items: center;
+      margin-top: 14px;
+      padding: 22px;
+      border: 1px solid var(--red);
+      border-radius: 16px;
+      background:
+        linear-gradient(135deg, rgba(230, 0, 0, .10), rgba(255,255,255,0) 38%),
+        #fff;
+      box-shadow: var(--shadow);
+    }
+
+    .launch-milestone span {
+      display: block;
+      color: var(--muted);
+      font-size: .82rem;
+      font-weight: 950;
+    }
+
+    .launch-milestone strong {
+      display: block;
+      margin-top: 6px;
+      color: var(--red);
+      font-size: clamp(2rem, 4vw, 3.3rem);
+      font-weight: 950;
+      line-height: .95;
+    }
+
+    .launch-milestone p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.42;
+    }
+
+    .success-list {
+      display: grid;
+      gap: 0;
+      overflow: hidden;
+      border: 1px solid rgba(28, 26, 28, .10);
+      border-radius: 16px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.88), rgba(255,255,255,.78)),
+        var(--sheet);
+      box-shadow: var(--shadow);
+    }
+
+    .success-row {
+      display: grid;
+      grid-template-columns: 108px minmax(220px, .42fr) minmax(0, 1fr);
+      gap: 24px;
+      align-items: start;
+      padding: 26px 30px;
+      border-bottom: 1px solid rgba(28, 26, 28, .10);
+    }
+
+    .success-row:last-child {
+      border-bottom: 0;
+    }
+
+    .success-row strong {
+      color: var(--red);
+      font-size: clamp(2.2rem, 4vw, 3.8rem);
+      font-weight: 900;
+      line-height: .9;
+    }
+
+    .success-row h3 {
+      margin: 4px 0 0;
+      font-size: clamp(1.25rem, 2vw, 1.7rem);
+      line-height: 1.08;
+    }
+
+    .success-row p {
+      max-width: 760px;
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.35;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: none;
+      place-items: center;
+      padding: 18px;
+      background: rgba(17,17,17,.56);
+    }
+
+    .modal.is-open { display: grid; }
+
+    .modal-card {
+      width: min(520px, 100%);
+      padding: 24px;
+      border: 1px solid var(--line-dark);
+      border-radius: 16px;
+      background: #fff;
+      box-shadow: 0 28px 80px rgba(0,0,0,.24);
+    }
+
+    .modal-card h2 {
+      margin: 0 0 8px;
+      font-size: 2rem;
+    }
+
+    .modal-card p {
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    @media (max-width: 1440px) {
+      .layout { padding-left: 0; }
+      .catalog-board { grid-template-columns: 220px minmax(0, 1fr) 500px; }
+      .vehicle-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 1180px) {
+      .layout { padding-left: 0; padding-bottom: 96px; }
+      .side-toolbar {
+        left: 12px;
+        right: 12px;
+        top: auto;
+        bottom: 12px;
+        width: auto;
+        padding: 8px;
+        transform: none;
+      }
+      .menu-hotspot { display: none; }
+      .side-toolbar::after { display: none; }
+      .toolbar-logo { display: none; }
+      .toolbar-nav {
+        display: flex;
+        gap: 6px;
+        margin: 0;
+        overflow-x: auto;
+      }
+      .toolbar-nav a {
+        min-width: 96px;
+        min-height: 36px;
+      }
+      .hero-top,
+      .catalog-board,
+      .full-lot,
+      .economy-shell,
+      .economy-model,
+      .launch-roadmap,
+      .launch-milestone {
+        grid-template-columns: 1fr;
+      }
+      .catalog-topbar,
+      .lot-card-layout,
+      .mini-tabs,
+      .pricing-row {
+        grid-template-columns: 1fr;
+      }
+      .filters,
+      .lot-preview {
+        border: 0;
+        border-top: 1px solid var(--line);
+      }
+      .hero-points,
+      .model-grid,
+      .economy-grid,
+      .economy-steps,
+      .metric-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .launch-roadmap {
+        gap: 10px;
+      }
+      .launch-roadmap::before,
+      .launch-step::after {
+        content: none;
+      }
+      .launch-step {
+        min-height: 0;
+      }
+      .success-row {
+        grid-template-columns: 82px minmax(0, 1fr);
+        gap: 14px 18px;
+      }
+      .success-row p {
+        grid-column: 2;
+      }
+      .span-4,
+      .span-5,
+      .span-6,
+      .span-7 {
+        grid-column: span 12;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .layout {
+        width: min(100% - 18px, 1720px);
+        padding-top: 10px;
+      }
+      .hero-top { padding: 20px 18px 14px; }
+      .brand-row { gap: 14px; }
+      .brand-divider { display: none; }
+      .hero-points,
+      .model-grid,
+      .vehicle-grid,
+      .kv-grid,
+      .info-columns,
+      .compare,
+      .metric-grid,
+      .economy-grid,
+      .economy-model,
+      .economy-steps,
+      .launch-roadmap,
+      .launch-milestone,
+      .name-grid {
+        grid-template-columns: 1fr;
+      }
+      .launch-roadmap {
+        padding-left: 24px;
+      }
+      .launch-roadmap::before {
+        content: "";
+        left: 31px;
+        right: auto;
+        top: 34px;
+        bottom: 34px;
+        width: 2px;
+        height: auto;
+      }
+      .launch-step {
+        padding-left: 52px;
+      }
+      .launch-num {
+        position: absolute;
+        left: -12px;
+        top: 18px;
+        width: 42px;
+        height: 42px;
+        margin: 0;
+        font-size: 1rem;
+      }
+      .success-row {
+        grid-template-columns: 1fr;
+        padding: 22px;
+      }
+      .success-row p {
+        grid-column: auto;
+      }
+      .catalog-board { margin: 0 10px 16px; }
+      .section-title { display: grid; }
+      .full-photo { min-height: 320px; }
+      .btn,
+      .small-btn { width: 100%; }
+      .card-actions { grid-template-columns: 1fr; }
+      .modal-actions { display: grid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="menu-hotspot" aria-hidden="true"></div>
+  <aside class="side-toolbar" aria-label="Навигация Авто.ру Профи">
+    <a class="toolbar-logo" href="#concept" aria-label="Auto.ru">
+      <span class="logo-mark">auto.ru</span>
+    </a>
+    <nav class="toolbar-nav">
+      <a class="is-active" aria-current="page" href="#concept">Концепт</a>
+      <a href="#catalog-page">Каталог</a>
+      <a href="#vehicle-card">Карточка авто</a>
+      <a href="#subscription">Подписка</a>
+      <a href="#dealer">Для дилера</a>
+      <a href="#buyer">Для покупателя</a>
+      <a href="#not-auction">Не аукцион</a>
+      <a href="#economy">Экономика</a>
+      <a href="#launch">Запуск</a>
+      <a href="#mvp">MVP</a>
+      <a href="#metrics">Метрики</a>
+    </nav>
+  </aside>
+
+  <main class="layout">
+<section class="hero section is-view" id="concept">
+      <div class="hero-top">
+        <div>
+          <div class="brand-row">
+            <div class="wordmark"><span class="logo-mark">auto.ru</span><span>Профи</span></div>
+            <h1>Авто.ру Профи</h1>
+            <p class="hero-subtitle">Закрытый B2B-каталог автомобилей не для розничной продажи</p>
+          </div>
+          <p class="hero-copy">Авто.ру Профи — отдельный закрытый канал для профессиональных участников рынка. Дилеры бесплатно выгружают проблемные автомобили по фиду: битые, категорию D, не на ходу, юридически сложные или требующие крупного ремонта. Платформа не работает по CPL-модели и не участвует в сделке: покупатель открывает контакт дилера и договаривается напрямую.</p>
+          <div class="hero-model" aria-label="Модель монетизации">
+            <div class="model-label">Модель монетизации</div>
+            <div class="model-grid">
+              <div class="model-item"><strong>Для дилера</strong><span>Бесплатная выгрузка лотов по фиду.</span></div>
+              <div class="model-item"><strong>Продвижение лотов</strong><span>Дополнительная монетизация дилера только внутри закрытого каталога.</span></div>
+              <div class="model-item"><strong>Основная выручка</strong><span>Подписка профессиональных покупателей / продавцов на доступ к контактам и закрытому потоку автомобилей.</span></div>
+            </div>
+          </div>
+          <div class="hero-actions">
+            <a class="btn primary hero-primary" href="#catalog-page">
+              <svg class="hero-car-icon" viewBox="0 0 48 32" aria-hidden="true" focusable="false">
+                <path d="M8 19.5h2.8l4.5-7.6c.7-1.2 1.9-1.9 3.3-1.9h12.6c1.3 0 2.6.7 3.3 1.8l4.7 7.7H42c1.7 0 3 1.3 3 3v3.2H3v-3.2c0-1.7 1.3-3 3-3h2Z" fill="none" stroke-width="3" stroke-linejoin="round"/>
+                <path d="M16.8 19.5h16.4" fill="none" stroke-width="3" stroke-linecap="round"/>
+                <circle cx="14" cy="25.8" r="3.2" fill="none" stroke-width="3"/>
+                <circle cx="34" cy="25.8" r="3.2" fill="none" stroke-width="3"/>
+              </svg>
+              <span>Посмотреть каталог</span>
+            </a>
+            <a class="btn hero-secondary" href="#not-auction">Как работает модель</a>
+          </div>
+        </div>
+        <div>
+          <div class="trust-card">
+            <div class="shield">✓</div>
+            <div>
+              <strong>Платформа для дилеров <span>и профессиональных покупателей</span></strong>
+              <p>Автомобили с проблемами, не для розничной витрины</p>
+            </div>
+          </div>
+          <div class="hero-car" aria-hidden="true"></div>
+        </div>
+      </div>
+
+      <div class="hero-points">
+        <div class="point"><div class="point-icon">01</div><div><strong>Только для профессионалов</strong><span>Доступ после проверки</span></div></div>
+        <div class="point"><div class="point-icon">02</div><div><strong>Фото дефектов и диагностика</strong><span>Документы и отчёты в карточке</span></div></div>
+        <div class="point"><div class="point-icon">03</div><div><strong>Прямой контакт с дилером</strong><span>Без посредников и без аукционов</span></div></div>
+        <div class="point"><div class="point-icon">04</div><div><strong>Доступ по подписке</strong><span>Фиксированные цены, возможен торг</span></div></div>
+      </div>
+    </section>
+
+    <section class="section" id="catalog-page">
+      <div class="section-title"><div><h2>Каталог</h2><p>Закрытая витрина автомобилей не для розничной продажи: фильтры, карточки лотов, диагностика и прямое открытие контакта дилера.</p></div><span class="tag">catalog</span></div>
+<div class="catalog-board" id="catalog">
+        <div class="catalog-topbar">
+          <div class="top-logo"><span class="logo-mark">auto.ru</span><span>Профи</span></div>
+          <div class="search-wrap">
+            <input type="search" value="" placeholder="Поиск по марке, модели, VIN, номеру объявления">
+            <span>⌕</span>
+          </div>
+          <div class="top-actions">
+            <span class="top-action">Сохранённые поиски</span>
+            <span class="top-action">Уведомления</span>
+            <span class="top-action">Профиль: покупатель</span>
+          </div>
+        </div>
+         <aside class="filters">
+          <div class="filter-head"><span>Фильтры</span><span class="reset">Сбросить все</span></div>
+          <div class="filter"><div class="filter-title">Регион <span>⌄</span></div><div class="filter-value">Все регионы</div><button class="filter-chip is-active" type="button">Москва</button><button class="filter-chip" type="button">СПб</button></div>
+          <div class="filter"><div class="filter-title">Марка <span>⌄</span></div><div class="filter-value">Все марки</div><button class="filter-chip" type="button">BMW</button><button class="filter-chip" type="button">Toyota</button><button class="filter-chip" type="button">Kia</button></div>
+          <div class="filter"><div class="filter-title">Модель <span>⌄</span></div><div class="filter-value">Все модели</div><button class="filter-chip" type="button">5 серии</button><button class="filter-chip" type="button">RAV4</button></div>
+          <div class="filter"><div class="filter-title">Цена, ₽</div><div class="filter-pair"><input value="от"><input value="до"></div></div>
+          <div class="filter"><div class="filter-title">Пробег, км</div><div class="filter-pair"><input value="от"><input value="до"></div></div>
+          <div class="filter"><div class="filter-title">Категория состояния <span>⌄</span></div><button class="filter-chip is-active" type="button">Битый</button><button class="filter-chip" type="button">Кат. D</button><button class="filter-chip" type="button">Крупный ремонт</button></div>
+          <div class="filter"><div class="filter-title">На ходу / не на ходу</div><button class="filter-chip" type="button">На ходу</button><button class="filter-chip is-active" type="button">Не на ходу</button></div>
+          <div class="filter"><div class="filter-title">Торг</div><button class="filter-chip" type="button">С торгом</button><button class="filter-chip" type="button">Без торга</button></div>
+          <div class="filter"><div class="filter-title">Юридический риск</div><button class="filter-chip" type="button">Залог</button><button class="filter-chip" type="button">Ограничения</button></div>
+          <div class="filter"><div class="filter-title">Тип повреждения</div><button class="filter-chip" type="button">Кузов</button><button class="filter-chip" type="button">Двигатель</button><button class="filter-chip" type="button">Документы</button></div>
+        </aside>
+         <section class="catalog-list" aria-label="Закрытый каталог автомобилей">
+          <div class="catalog-list-head">
+            <strong>Найдено 312 автомобилей</strong>
+            <div class="list-tools">
+              <span class="tool-pill">Все фильтры</span>
+              <span class="tool-pill">Битый ×</span>
+              <span class="tool-pill">Не на ходу ×</span>
+              <span class="tool-pill">С торгом ×</span>
+            </div>
+          </div>
+          <div class="vehicle-grid">
+            <article class="vehicle-card">
+              <div class="car-photo"></div>
+              <div class="card-body">
+                <div class="badges"><span class="badge">Битый</span><span class="badge green">Торг</span></div>
+                <div class="vehicle-title"><h3>BMW 5 серии<br><span>2019 • 530i xDrive</span></h3><span>☆</span></div>
+                <div class="meta">Москва • Пробег: 98 500 км</div>
+                <div class="price">1 650 000 ₽</div>
+                <div class="desc">Повреждение передней части, сработали подушки безопасности</div>
+                <div class="card-actions"><button class="small-btn red js-contact" type="button">Показать контакт</button><button class="small-btn js-diag" type="button">Диагностика</button></div>
+              </div>
+            </article>
+            <article class="vehicle-card">
+              <div class="car-photo"></div>
+              <div class="card-body">
+                <div class="badges"><span class="badge">Кат. D</span><span class="badge green">Торг</span></div>
+                <div class="vehicle-title"><h3>Toyota RAV4<br><span>2017 • 2.0 4WD</span></h3><span>☆</span></div>
+                <div class="meta">Санкт-Петербург • Пробег: 112 000 км</div>
+                <div class="price">1 280 000 ₽</div>
+                <div class="desc">Удар спереди слева, повреждение лонжерона</div>
+                <div class="card-actions"><button class="small-btn red js-contact" type="button">Показать контакт</button><button class="small-btn js-diag" type="button">Диагностика</button></div>
+              </div>
+            </article>
+            <article class="vehicle-card">
+              <div class="car-photo"></div>
+              <div class="card-body">
+                <div class="badges"><span class="badge">Не на ходу</span><span class="badge green">Торг</span></div>
+                <div class="vehicle-title"><h3>Kia Optima<br><span>2018 • 2.4 AT</span></h3><span>☆</span></div>
+                <div class="meta">Казань • Пробег: 135 000 км</div>
+                <div class="price">950 000 ₽</div>
+                <div class="desc">Двигатель не запускается, ошибка по ГРМ</div>
+                <div class="card-actions"><button class="small-btn red js-contact" type="button">Показать контакт</button><button class="small-btn js-diag" type="button">Диагностика</button></div>
+              </div>
+            </article>
+            <article class="vehicle-card">
+              <div class="car-photo"></div>
+              <div class="card-body">
+                <div class="badges"><span class="badge">Битый</span><span class="badge green">Торг</span></div>
+                <div class="vehicle-title"><h3>Audi Q5<br><span>2016 • 2.0 TFSI quattro</span></h3><span>☆</span></div>
+                <div class="meta">Екатеринбург • Пробег: 123 000 км</div>
+                <div class="price">1 420 000 ₽</div>
+                <div class="desc">Повреждение передней части, радиаторы, усилитель</div>
+                <div class="card-actions"><button class="small-btn red js-contact" type="button">Показать контакт</button><button class="small-btn js-diag" type="button">Диагностика</button></div>
+              </div>
+            </article>
+            <article class="vehicle-card">
+              <div class="car-photo"></div>
+              <div class="card-body">
+                <div class="badges"><span class="badge">Кат. D</span><span class="badge green">Торг</span></div>
+                <div class="vehicle-title"><h3>Mercedes-Benz E-класс<br><span>2017 • E200</span></h3><span>☆</span></div>
+                <div class="meta">Новосибирск • Пробег: 155 000 км</div>
+                <div class="price">1 550 000 ₽</div>
+                <div class="desc">Удар в правый бок, сработали подушки безопасности</div>
+                <div class="card-actions"><button class="small-btn red js-contact" type="button">Показать контакт</button><button class="small-btn js-diag" type="button">Диагностика</button></div>
+              </div>
+            </article>
+            <article class="vehicle-card">
+              <div class="car-photo"></div>
+              <div class="card-body">
+                <div class="badges"><span class="badge amber">Юр. риск</span><span class="badge green">Торг</span></div>
+                <div class="vehicle-title"><h3>Volkswagen Tiguan<br><span>2015 • 1.4 TSI</span></h3><span>☆</span></div>
+                <div class="meta">Ростов-на-Дону • Пробег: 142 000 км</div>
+                <div class="price">1 050 000 ₽</div>
+                <div class="desc">Ограничения / залог у банка, полный пакет документов</div>
+                <div class="card-actions"><button class="small-btn red js-contact" type="button">Показать контакт</button><button class="small-btn js-diag" type="button">Диагностика</button></div>
+              </div>
+            </article>
+          </div>
+          <div class="catalog-note"><span class="lock">B2B</span><span>Контакты дилеров доступны только подписчикам — профессиональным покупателям после авторизации</span></div>
+        </section>
+         <aside class="lot-preview" aria-label="Карточка автомобиля и подписка">
+          <div class="preview-card">
+            <h2>Карточка автомобиля (пример)</h2>
+            <div class="lot-card-layout">
+              <div>
+                <div class="big-photo"></div>
+                <div class="thumbs"><div class="thumb"></div><div class="thumb"></div><div class="thumb"></div><div class="thumb"></div><div class="thumb"></div></div>
+              </div>
+              <div class="lot-details">
+                <div class="badges"><span class="badge">Битый</span><span class="badge green">Торг</span></div>
+                <h3>BMW 5 серии</h3>
+                <div class="lot-meta">2019 • 530i xDrive • VIN: WBAJX7C50KB000123</div>
+                <div class="lot-price">1 650 000 ₽</div>
+                <div class="lot-meta">Москва • Пробег: 98 500 км</div>
+                <div class="damage-map"></div>
+              </div>
+            </div>
+            <div class="mini-tabs">
+              <div class="mini-nav">
+                <button class="mini-tab is-active" type="button" data-lot-tab="damage">Повреждения</button>
+                <button class="mini-tab" type="button" data-lot-tab="diagnostics">Диагностика</button>
+                <button class="mini-tab" type="button" data-lot-tab="documents">Документы</button>
+                <button class="mini-tab" type="button" data-lot-tab="inspection">Условия осмотра</button>
+              </div>
+              <div>
+                <div class="mini-panel" data-lot-panel="damage"><ul class="clean-list"><li>повреждение передней части;</li><li>замена переднего бампера, капота, левой фары;</li><li>сработали подушки безопасности;</li><li>повреждены радиаторы и усилитель бампера.</li></ul></div>
+                <div class="mini-panel" data-lot-panel="diagnostics" hidden><ul class="clean-list"><li>двигатель без критических замечаний;</li><li>АКПП без критических замечаний;</li><li>ошибки по системам безопасности;</li><li>полный отчёт доступен подписчику.</li></ul></div>
+                <div class="mini-panel" data-lot-panel="documents" hidden><ul class="clean-list"><li>ПТС / ЭПТС;</li><li>СТС;</li><li>диагностическая карта;</li><li>отчёт об оценке и фото документов.</li></ul></div>
+                <div class="mini-panel" data-lot-panel="inspection" hidden><ul class="clean-list"><li>осмотр по предварительной записи;</li><li>площадка дилера, Москва;</li><li>подъёмник доступен в будни;</li><li>тест-драйв невозможен.</li></ul></div>
+              </div>
+            </div>
+          </div>
+           <div class="contact-panel" id="catalog-subscription">
+            <h2>Контакты дилера доступны по подписке</h2>
+            <div class="pricing-row">
+              <button class="plan" type="button"><strong>Базовый</strong><small>1 контакт в день</small><span class="plan-price">3 900 ₽ / мес.</span><small>Базовый каталог, сохранённые поиски</small></button>
+              <button class="plan is-selected" type="button"><strong>Профессиональный</strong><small>10 контактов в день</small><span class="plan-price">9 900 ₽ / мес.</span><small>Уведомления, фильтры, диагностика и документы</small></button>
+              <button class="plan" type="button"><strong>Региональный</strong><small>Безлимит в регионе</small><span class="plan-price">14 900 ₽ / мес.</span><small>Приоритетный доступ, командная работа</small></button>
+            </div>
+            <div class="button-row"><button class="btn primary js-contact" type="button">Открыть контакт</button><span class="tag">Доступ только для юрлиц, ИП и профучастников</span></div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+<section class="section" id="vehicle-card">
+      <div class="section-title">
+        <div>
+          <h2>Карточка автомобиля</h2>
+          <p>Внутренняя страница лота собирает фото, миниатюры, цену, VIN, город, пробег, состояние, диагностику, документы и условия осмотра.</p>
+        </div>
+        <span class="tag">lot detail</span>
+      </div>
+      <div class="full-lot">
+        <div>
+          <div class="full-photo"></div>
+          <div class="full-thumbs"><div class="thumb"></div><div class="thumb"></div><div class="thumb"></div><div class="thumb"></div><div class="thumb"></div><div class="thumb"></div></div>
+        </div>
+        <div class="full-info">
+          <div class="badges"><span class="badge">Битый</span><span class="badge green">Торг</span><span class="badge blue">Диагностика</span></div>
+          <h2>BMW 5 серии • 2019 • 530i xDrive</h2>
+          <div class="lot-price">1 650 000 ₽</div>
+          <div class="kv-grid">
+            <div class="kv"><strong>WBAJX7C50KB000123</strong><span>VIN</span></div>
+            <div class="kv"><strong>Москва</strong><span>город</span></div>
+            <div class="kv"><strong>98 500 км</strong><span>пробег</span></div>
+            <div class="kv"><strong>не для розницы</strong><span>канал продажи</span></div>
+          </div>
+          <div class="info-columns">
+            <div class="content-card"><h2>Повреждения</h2><ul class="clean-list"><li>повреждение передней части;</li><li>замена переднего бампера, капота, левой фары;</li><li>сработали подушки безопасности;</li><li>повреждены радиаторы и усилитель бампера.</li></ul></div>
+            <div class="content-card"><h2>Диагностика</h2><ul class="clean-list"><li>двигатель без критических замечаний;</li><li>АКПП без критических замечаний;</li><li>ошибки по системам безопасности;</li><li>полный отчёт доступен подписчику.</li></ul></div>
+            <div class="content-card"><h2>Документы</h2><ul class="clean-list"><li>ПТС / ЭПТС;</li><li>СТС;</li><li>диагностическая карта;</li><li>отчёт об оценке и фото документов.</li></ul></div>
+            <div class="content-card"><h2>Условия осмотра</h2><ul class="clean-list"><li>осмотр на площадке дилера;</li><li>запись через ответственного менеджера;</li><li>контакт доступен после подписки.</li></ul></div>
+          </div>
+          <button class="btn primary js-contact" type="button">Показать контакт</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="subscription">
+      <div class="section-title"><div><h2>Подписка</h2><p>Профессиональные покупатели получают доступ к контактам дилеров через подписочную модель без комиссии за сделку.</p></div><span class="tag">subscription</span></div>
+<div class="contact-panel" id="subscription-panel">
+            <h2>Контакты дилера доступны по подписке</h2>
+            <div class="pricing-row">
+              <button class="plan" type="button"><strong>Базовый</strong><small>1 контакт в день</small><span class="plan-price">3 900 ₽ / мес.</span><small>Базовый каталог, сохранённые поиски</small></button>
+              <button class="plan is-selected" type="button"><strong>Профессиональный</strong><small>10 контактов в день</small><span class="plan-price">9 900 ₽ / мес.</span><small>Уведомления, фильтры, диагностика и документы</small></button>
+              <button class="plan" type="button"><strong>Региональный</strong><small>Безлимит в регионе</small><span class="plan-price">14 900 ₽ / мес.</span><small>Приоритетный доступ, командная работа</small></button>
+            </div>
+            <div class="button-row"><button class="btn primary js-contact" type="button">Открыть контакт</button><span class="tag">Доступ только для юрлиц, ИП и профучастников</span></div>
+          </div>
+    </section>
+
+<section class="section" id="dealer">
+      <div class="section-title"><div><h2>Ценность для дилера</h2><p>Закрытый канал реализации некондиции без публикации проблемных автомобилей в розничной витрине.</p></div><span class="tag">dealer value</span></div>
+      <div class="dealer-benefits" aria-label="Преимущества для дилера">
+        <article class="dealer-benefit accent">
+          <strong>01</strong>
+          <h3>Закрытый канал реализации</h3>
+          <p>Дополнительный B2B-поток для автомобилей, которые не подходят для розничной витрины.</p>
+        </article>
+        <article class="dealer-benefit">
+          <strong>02</strong>
+          <h3>Меньше зависимости</h3>
+          <p>Снижается зависимость от 2–3 постоянных перекупов за счёт доступа к более широкой профессиональной аудитории.</p>
+        </article>
+        <article class="dealer-benefit accent">
+          <strong>03</strong>
+          <h3>Прозрачность перед собственником</h3>
+          <p>Лоты уходят через понятный канал с фиксированным описанием состояния, цены и контакта ответственного дилера.</p>
+        </article>
+        <article class="dealer-benefit">
+          <strong>04</strong>
+          <h3>Снижение коррупционных рисков</h3>
+          <p>Продажа некондиции становится более контролируемой: интерес и обращения проходят через закрытую платформу.</p>
+        </article>
+        <article class="dealer-benefit accent">
+          <strong>05</strong>
+          <h3>Без публикации в рознице</h3>
+          <p>Проблемные автомобили не попадают в открытый классифайд и не смешиваются с розничной витриной дилера.</p>
+        </article>
+        <article class="dealer-benefit">
+          <strong>06</strong>
+          <h3>Быстрый вывод неликвида</h3>
+          <p>Закрытый каталог помогает быстрее находить профессионального покупателя и освобождать склад.</p>
+        </article>
+      </div>
+    </section>
+
+<section class="section" id="buyer">
+      <div class="section-title"><div><h2>Ценность для покупателя</h2><p>Профессиональный покупатель получает понятный поток дилерских автомобилей для ремонта, перепродажи, разбора или ресейла.</p></div><span class="tag">buyer value</span></div>
+      <div class="buyer-benefits" aria-label="Преимущества для покупателя">
+        <article class="buyer-benefit accent">
+          <strong>01</strong>
+          <h3>Закрытый поток лотов</h3>
+          <p>Доступ к дилерским автомобилям, которые не выходят в обычную розничную витрину.</p>
+        </article>
+        <article class="buyer-benefit">
+          <strong>02</strong>
+          <h3>Профессиональная работа</h3>
+          <p>Лоты подходят для ремонта, перепродажи, разбора или ресейла, а не для стандартной розничной покупки.</p>
+        </article>
+        <article class="buyer-benefit accent">
+          <strong>03</strong>
+          <h3>Понятное происхождение</h3>
+          <p>Покупатель видит дилерский источник автомобиля и работает с понятным владельцем лота.</p>
+        </article>
+        <article class="buyer-benefit">
+          <strong>04</strong>
+          <h3>Честное описание дефектов</h3>
+          <p>Карточка показывает состояние автомобиля, повреждения и ключевые риски до открытия контакта.</p>
+        </article>
+        <article class="buyer-benefit accent">
+          <strong>05</strong>
+          <h3>Диагностика и документы</h3>
+          <p>Фото повреждений, диагностика, документы и условия осмотра собраны в карточке лота.</p>
+        </article>
+        <article class="buyer-benefit">
+          <strong>06</strong>
+          <h3>Прямой контакт с дилером</h3>
+          <p>После открытия контакта покупатель договаривается напрямую, без аукциона и без комиссии за сделку.</p>
+        </article>
+        <article class="buyer-benefit accent">
+          <strong>07</strong>
+          <h3>Окупаемость подписки</h3>
+          <p>Подписка может окупиться одной удачной покупкой, если покупатель быстро находит подходящий лот с понятным риском.</p>
+        </article>
+      </div>
+    </section>
+
+<section class="section" id="not-auction">
+      <div class="section-title"><div><h2>Почему это не аукцион</h2><p>Авто.ру Профи не проводит торги и не участвует в сделке. Дилер задаёт цену, покупатель открывает контакт и договаривается напрямую.</p></div><span class="tag">not auction</span></div>
+      <div class="compare">
+        <article class="content-card"><h2>Аукцион</h2><ul class="clean-list"><li>ставки;</li><li>ожидание окончания торгов;</li><li>конкуренция за лот;</li><li>комиссия или регламент сделки;</li><li>сложнее процедура.</li></ul></article>
+        <article class="content-card red"><h2>Авто.ру Профи</h2><ul class="clean-list"><li>фиксированная цена или цена с торгом;</li><li>прямой контакт;</li><li>подписка за доступ;</li><li>сделка вне платформы;</li><li>быстрый B2B-канал.</li></ul></article>
+      </div>
+    </section>
+
+<section class="section" id="economy">
+      <div class="section-title"><div><h2>Экономическая эффективность бизнес-модели</h2><p>Предварительный расчёт сделан только от базы профпродавцов Auto.ru. Реальная ёмкость может быть выше за счёт уникальных профессиональных продавцов на Avito и Drom, но для точной оценки нужна дедупликация аудитории.</p></div><span class="tag">economics</span></div>
+      <div class="economy-shell">
+        <div class="economy-steps">
+          <div class="economy-step"><strong>Вводные</strong><span>Берём только базу Auto.ru как осторожный ориентир.</span></div>
+          <div class="economy-step"><strong>Расчёт</strong><span>Проверяем подписочную модель при проникновении 5%.</span></div>
+          <div class="economy-step"><strong>Итоговая выручка</strong><span>Считаем месячный и годовой потенциал подписки.</span></div>
+          <div class="economy-step"><strong>Оговорка по рынку</strong><span>Avito и Drom могут увеличить ёмкость после дедупликации.</span></div>
+        </div>
+        <div class="economy-grid">
+          <article class="economy-card"><h3>База Auto.ru</h3><span class="economy-value">43 090</span><p>профилей перекупов и профессиональных продавцов</p></article>
+          <article class="economy-card"><h3>Целевая доля</h3><span class="economy-value">5%</span><p>осторожная гипотеза активных пользователей сервиса</p></article>
+          <article class="economy-card"><h3>Платящие подписчики</h3><span class="economy-value">2 155</span><p>расчётная база подписчиков при проникновении 5%</p></article>
+          <article class="economy-card"><h3>Подписка</h3><span class="economy-value">5 000 ₽</span><p>стоимость доступа в месяц</p></article>
+        </div>
+        <div class="economy-model">
+          <div class="formula-panel">
+            <h3>Расчёт</h3>
+            <div class="formula-line">43 090 × 5% × 5 000 ₽ = <strong>10,8 млн ₽ / мес.</strong></div>
+            <div class="formula-line secondary">10,8 млн ₽ × 12 = <strong>129,3 млн ₽ / год</strong></div>
+          </div>
+          <div class="revenue-panel">
+            <h3>Итоговая выручка</h3>
+            <div class="revenue-row"><span>Месячная выручка</span><strong>10,8 млн ₽ / мес.</strong></div>
+            <div class="revenue-row"><span>Годовая выручка</span><strong>129,3 млн ₽ / год</strong></div>
+            <p>Расчёт учитывает только подписочную модель и не включает потенциальный доход от продвижения лотов внутри закрытого каталога.</p>
+          </div>
+        </div>
+        <div class="market-note">
+          <h3>Важно</h3>
+          <p>Расчёт построен на базе Auto.ru как доступном ориентире. Общая рыночная ёмкость может быть выше, так как часть профессиональных продавцов присутствует только на Avito или Drom. Для точного TAM/SAM/SOM нужна дедупликация профилей между площадками.</p>
+        </div>
+      </div>
+    </section>
+
+<section class="section" id="launch" tabindex="-1">
+      <div class="section-title"><div><h2>Путь запуска проекта</h2><p>Проект запускается поэтапно: разработка, запуск, тестовый период и переход на монетизацию. Целевой горизонт — до конца 2026 года.</p></div><span class="tag">roadmap 2026</span></div>
+      <div class="launch-roadmap">
+        <article class="launch-step">
+          <div class="launch-num">01</div>
+          <h3>Разработка</h3>
+          <div class="launch-term">3 месяца</div>
+          <p>Проектирование и сборка MVP: закрытый каталог, карточки автомобилей, подписка, кабинет и механика открытия контактов.</p>
+        </article>
+        <article class="launch-step">
+          <div class="launch-num">02</div>
+          <h3>Запуск</h3>
+          <div class="launch-term">После завершения разработки</div>
+          <p>Выход пилотной версии и подключение первых дилеров и профессиональных покупателей.</p>
+        </article>
+        <article class="launch-step">
+          <div class="launch-num">03</div>
+          <h3>Тестовый период</h3>
+          <div class="launch-term">2–3 месяца</div>
+          <p>Проверка гипотезы, сбор обратной связи, анализ спроса, активности и пользовательского поведения.</p>
+        </article>
+        <article class="launch-step">
+          <div class="launch-num">04</div>
+          <h3>Переход на монетизацию</h3>
+          <div class="launch-term">После тестового периода</div>
+          <p>Запуск платной подписки и проверка модели дополнительной монетизации через продвижение лотов.</p>
+        </article>
+      </div>
+      <div class="launch-milestone">
+        <div><span>Целевой горизонт</span><strong>До конца 2026 года</strong></div>
+        <p>Цель — до конца 2026 года пройти путь от разработки MVP до подтверждённой модели монетизации.</p>
+      </div>
+    </section>
+
+<section class="section" id="mvp">
+      <div class="section-title"><div><h2>MVP</h2><p>Пилот проверяет наличие дилерского предложения, спрос профессионалов и готовность платить за доступ к контактам.</p></div><span class="tag">60 days</span></div>
+      <div class="metric-grid">
+        <div class="metric"><strong>1</strong><span>регион</span></div>
+        <div class="metric"><strong>10-15</strong><span>дилерских групп</span></div>
+        <div class="metric"><strong>100-150</strong><span>профессиональных покупателей</span></div>
+        <div class="metric"><strong>150-300</strong><span>автомобилей в месяц</span></div>
+        <div class="metric"><strong>60</strong><span>дней проверки</span></div>
+        <div class="metric"><strong>1 месяц</strong><span>бесплатно или символическая цена</span></div>
+        <div class="metric"><strong>5 000 ₽</strong><span>тест подписки со второго месяца</span></div>
+        <div class="metric"><strong>0%</strong><span>комиссии за сделку</span></div>
+      </div>
+    </section>
+
+<section class="section" id="metrics">
+      <div class="section-title"><div><h2>Метрики успеха</h2><p>Пилот успешен, если дилеры регулярно публикуют лоты, покупатели открывают контакты и готовы платить за доступ после тестового периода.</p></div><span class="tag">metrics</span></div>
+      <div class="success-list">
+        <article class="success-row">
+          <strong>01</strong>
+          <h3>Активные дилеры</h3>
+          <p>Сколько дилеров регулярно публикуют автомобили в закрытый каталог.</p>
+        </article>
+        <article class="success-row">
+          <strong>02</strong>
+          <h3>Опубликованные лоты</h3>
+          <p>Сколько автомобилей не для розницы появилось в каталоге за период пилота.</p>
+        </article>
+        <article class="success-row">
+          <strong>03</strong>
+          <h3>Активные покупатели</h3>
+          <p>Сколько проверенных профессиональных покупателей реально пользуются каталогом.</p>
+        </article>
+        <article class="success-row">
+          <strong>04</strong>
+          <h3>Открытия контактов</h3>
+          <p>Сколько раз покупатели открывали контакт дилера по интересующим лотам.</p>
+        </article>
+        <article class="success-row">
+          <strong>05</strong>
+          <h3>Доля лотов с открытием контакта</h3>
+          <p>Показывает, какая часть автомобилей получила реальный интерес со стороны покупателей.</p>
+        </article>
+        <article class="success-row">
+          <strong>06</strong>
+          <h3>Готовность платить за подписку</h3>
+          <p>Сколько покупателей готовы продолжить пользоваться сервисом после тестового периода.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal" id="contactModal" role="dialog" aria-modal="true" aria-labelledby="contactTitle">
+    <div class="modal-card">
+      <h2 id="contactTitle">Контакты дилера</h2>
+      <p>Контакты дилера доступны по подписке для проверенных профессиональных покупателей.</p>
+      <div class="modal-actions">
+        <button class="btn" type="button" data-close-modal>Закрыть</button>
+        <a class="btn primary" href="#subscription" data-close-modal>Выбрать тариф</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const navLinks = Array.from(document.querySelectorAll(".toolbar-nav a"));
+    const pageSections = Array.from(document.querySelectorAll("main > .section"));
+    const pageIds = new Set(pageSections.map(section => section.id));
+    const sideToolbar = document.querySelector(".side-toolbar");
+    const menuHotspot = document.querySelector(".menu-hotspot");
+    let toolbarHideTimer = null;
+
+    const openToolbar = () => {
+      clearTimeout(toolbarHideTimer);
+      sideToolbar.classList.add("is-open");
+    };
+
+    const scheduleToolbarClose = () => {
+      clearTimeout(toolbarHideTimer);
+      toolbarHideTimer = setTimeout(() => {
+        sideToolbar.classList.remove("is-open");
+      }, 2000);
+    };
+
+    sideToolbar.addEventListener("mouseenter", openToolbar);
+    sideToolbar.addEventListener("mouseleave", scheduleToolbarClose);
+    sideToolbar.addEventListener("focusin", openToolbar);
+    sideToolbar.addEventListener("focusout", scheduleToolbarClose);
+    menuHotspot.addEventListener("mouseenter", openToolbar);
+    menuHotspot.addEventListener("mouseleave", scheduleToolbarClose);
+    menuHotspot.addEventListener("click", openToolbar);
+
+    const activateNav = (id) => {
+      navLinks.forEach(link => {
+        const isActive = link.getAttribute("href") === `#${id}`;
+        link.classList.toggle("is-active", isActive);
+        if (isActive) link.setAttribute("aria-current", "page");
+        else link.removeAttribute("aria-current");
+      });
+    };
+
+    const showPage = (id, options = {}) => {
+      const target = document.getElementById(id);
+      if (!target || !pageIds.has(id)) return false;
+
+      pageSections.forEach(section => {
+        const isCurrent = section === target;
+        section.classList.toggle("is-view", isCurrent);
+        section.hidden = !isCurrent;
+      });
+      activateNav(id);
+
+      if (options.updateUrl !== false) {
+        history.pushState({ page: id }, "", `#${id}`);
+      }
+      if (options.resetScroll !== false) {
+        window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+      }
+      scheduleToolbarClose();
+      return true;
+    };
+
+    document.querySelectorAll('a[href^="#"]').forEach(link => {
+      link.addEventListener("click", event => {
+        const id = link.getAttribute("href").slice(1);
+        if (showPage(id)) event.preventDefault();
+      });
+    });
+
+    const initialPage = pageIds.has(location.hash.slice(1)) ? location.hash.slice(1) : "concept";
+    showPage(initialPage, { updateUrl: false, resetScroll: true });
+    window.addEventListener("popstate", () => {
+      const id = pageIds.has(location.hash.slice(1)) ? location.hash.slice(1) : "concept";
+      showPage(id, { updateUrl: false, resetScroll: true });
+    });
+
+    document.querySelectorAll(".filter-chip").forEach(chip => {
+      chip.addEventListener("click", () => chip.classList.toggle("is-active"));
+    });
+
+    const lotTabs = Array.from(document.querySelectorAll("[data-lot-tab]"));
+    const lotPanels = Array.from(document.querySelectorAll("[data-lot-panel]"));
+    const setLotTab = (name) => {
+      lotTabs.forEach(tab => tab.classList.toggle("is-active", tab.dataset.lotTab === name));
+      lotPanels.forEach(panel => { panel.hidden = panel.dataset.lotPanel !== name; });
+    };
+    lotTabs.forEach(tab => tab.addEventListener("click", () => setLotTab(tab.dataset.lotTab)));
+    document.querySelectorAll(".js-diag").forEach(button => {
+      button.addEventListener("click", () => {
+        setLotTab("diagnostics");
+        showPage("catalog-page");
+      });
+    });
+
+    document.querySelectorAll(".plan").forEach(plan => {
+      plan.addEventListener("click", () => {
+        document.querySelectorAll(".plan").forEach(item => item.classList.remove("is-selected"));
+        plan.classList.add("is-selected");
+      });
+    });
+
+    const modal = document.getElementById("contactModal");
+    const openModal = () => {
+      modal.classList.add("is-open");
+      document.body.classList.add("modal-open");
+      modal.querySelector("[data-close-modal]").focus();
+    };
+    const closeModal = () => {
+      modal.classList.remove("is-open");
+      document.body.classList.remove("modal-open");
+    };
+
+    document.querySelectorAll(".js-contact").forEach(button => button.addEventListener("click", openModal));
+    document.querySelectorAll("[data-close-modal]").forEach(button => button.addEventListener("click", closeModal));
+    modal.addEventListener("click", event => { if (event.target === modal) closeModal(); });
+    document.addEventListener("keydown", event => { if (event.key === "Escape") closeModal(); });
+  </script>
+</body>
+</html>

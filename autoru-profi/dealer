@@ -1,0 +1,5 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Для дилера</title>
+<script>location.replace("/autoru-profi.html#dealer");</script>
+<a href="/autoru-profi.html#dealer">Открыть раздел для дилера</a>
